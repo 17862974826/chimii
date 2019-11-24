@@ -1,26 +1,81 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import { Home } from './page/home/index'
+import Detail from './page/detail'
+import Category from './page/category'
+import Celebrity from './page/celebrity'
+import Navbar from './components/navbar'
+import Footer from './components/footer'
+import Error from './components/Error'
+import Search from './page/search'
+import Cart from './page/cart'
+import Payment from './page/payment'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+class App extends React.Component {
+
+
+  state = {
+    show: false,
+    fontColor: '#000',
+    bgColor: '#fff',
+
+  }
+
+  handleChangeNavbarStatus = (params = {} ) => {
+    this.setState({
+      ...params
+    })
+  }
+
+  render(){
+    const { fontColor, bgColor } = this.state
+    const navbarParams = {
+      fontColor,
+      bgColor
+    }
+
+
+    return (
+      <>
+      <Router>
+        <Navbar {...navbarParams}/>
+        <Switch>
+            <Route path="/" exact>
+              <Home onChangeNavbarStatus={this.handleChangeNavbarStatus} />
+            </Route>
+            <Route path="/detail/:id" exact>
+              <Detail />
+            </Route>
+            <Route path="/category/:cate" >
+              <Category />
+            </Route>
+            <Route path="/celebrity/:id" exact>
+              <Celebrity />
+            </Route>
+            <Route path="/search/:q" exact>
+              <Search />
+            </Route>
+            <Route path="/cart">
+              <Cart />
+            </Route>
+            <Route path="/payment/:id" exact>
+              <Payment />
+            </Route>
+            <Route path="*">
+              <Error />
+            </Route>
+          </Switch>
+      </Router>
+    <Footer/>
+    </>
+    );
+  }
 }
 
 export default App;
