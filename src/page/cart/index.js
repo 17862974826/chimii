@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 
 const styles = {
     wrap: {
@@ -103,50 +104,34 @@ class Cart extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            cart: [
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'title name',
-                    price: '20.00',
-                    size: 'Medium',
-                    number: 1
-                },{
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'title name',
-                    price: '20.00',
-                    size: 'Medium',
-                    number: 1
-                },{
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'title name',
-                    price: '20.00',
-                    size: 'Medium',
-                    number: 1
-                },
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'title name',
-                    price: '20.00',
-                    size: 'Medium',
-                    number: 1
-                },
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'title name',
-                    price: '20.00',
-                    size: 'Medium',
-                    number: 1
-                }
-
-            ]
+            cart: []
         }
     }
 
     handleAddProduct = index => {
-        this.state.cart[index].number += 1
+
+        if(this.state.cart[index].number) {
+            this.state.cart[index].number += 1
+        } else {
+            this.state.cart[index].number = 1
+        }
+
         this.setState({
             cart: this.state.cart
         })
+    }
+
+    componentDidMount() {
+        axios.get('/index.php?c=api/chimi/cart').then(res => {
+            const { data: { data } = {} } = res || {}
+            const { itemList = [] } = data || {}
+            if(Array.isArray(itemList) && itemList.length) {
+            
+                this.setState({
+                    cart: itemList
+                })
+            }
+        }).catch(error => console.error(error))
     }
 
     render() {
@@ -188,7 +173,7 @@ class Cart extends React.Component {
                         })
                     }
                 </div>
-                <div style={{...styles.order}}>
+                {/* <div style={{...styles.order}}>
                     <p style={{...styles.orderTitle}}>{'Order'}</p>
                     {
                         cart.map((v, i) => {
@@ -216,7 +201,7 @@ class Cart extends React.Component {
                     <div style={{...styles.button}}>
                         <p style={{color: '#fff', fontSize: 36}}>{'Continue'}</p>
                     </div>
-                </div>
+                </div> */}
            </div>
         )
     }

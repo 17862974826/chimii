@@ -1,6 +1,8 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import Item from '../../../components/CratItem'
+import axios from 'axios'
+
 
 const styles = {
     wrap: {
@@ -83,42 +85,25 @@ class Cart extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            list: [
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'ITEM NAME',
-                    desc: 'xxx say  “soooo cute～”',
-                    price: '20.00',
-                    originPrice: '40.00'
-                },
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'ITEM NAME',
-                    desc: 'xxx say  “soooo cute～”',
-                    price: '20.00',
-                    originPrice: '40.00'
-                },
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'ITEM NAME',
-                    desc: 'xxx say  “soooo cute～”',
-                    price: '20.00',
-                    originPrice: '40.00'
-                },
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'ITEM NAME',
-                    desc: 'xxx say  “soooo cute～”',
-                    price: '20.00',
-                    originPrice: '40.00'
-                }
-            ]
+            list: []
         }
     }
 
     handleJumpToPayment = () => {
         const { history }  = this.props
         history.push('/payment/1')
+    }
+
+    componentDidMount() {
+        axios.get('/index.php?c=api/chimi/cart').then(res => {
+            const { data: { data } = {} } = res || {}
+            const { itemList = [] } = data || {}
+            if(Array.isArray(itemList) && itemList.length) {
+                this.setState({
+                    list: itemList
+                })
+            }
+        }).catch(error => console.error(error))
     }
 
     render() {

@@ -5,7 +5,7 @@ import '../../App.css'
 import {
     withRouter
   } from "react-router-dom";
-
+import axios from 'axios'
 import Login from '../login'
 import Search from '../../page/search/components/'
 import ILike from '../iLike'
@@ -26,105 +26,8 @@ class Navbar extends Component {
             currentTab: null,
             clickTab: null,
             sign: null,
-            showMask: false,
             show: false,
-            navList:[
-                {
-                    title: 'New',
-                    showMask: false,
-                    items:[
-                        {
-                            title: 'Popular Styles',
-                            list:[
-                                {
-                                    title: 'Color'
-                                }
-                            ]
-                        },
-                        {
-                            title: 'Chains',
-                            list:[
-                                {
-                                    title: 'Diamond'
-                                },
-                                {
-                                    title: 'Gemstone'
-                                },
-                                {
-                                    title: 'Gold'
-                                },
-                                {
-                                    title: 'AlteAlternativeAlternativernative Metals'
-                                }
-                            ]
-                        },
-                        {
-                            title: 'Cross Necklaces',
-                            list:[
-                                {
-                                    title: 'Alternative Metals'
-                                }
-                            ]
-                        },
-                        {
-                            title: 'Fashion Necklaces',
-                            list:[
-                                {
-                                    title: 'Alternative Metals'
-                                }
-                            ]
-                        },
-                        {
-                            title: 'Halo Necklaces',
-                            list:[
-                                {
-                                    title: 'Alternative Metals'
-                                }
-                            ]
-                        },
-                        {
-                            title: 'Natural',
-                            list:[
-                                {
-                                    title: 'Alternative Metals'
-                                }
-                            ]
-                        },
-                        {
-                            title: 'Size',
-                            list:[
-                                {
-                                    title: 'Alternative Metals'
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    title: 'Necklaces',
-                    showMask: false,
-                },
-                {
-                    title: 'Rings',
-                    showMask: false,
-                },
-                {
-                    title: 'Bracelets',
-                    showMask: false,
-                },
-                {
-                    title: 'Earrings',
-                    showMask: false,
-                },
-                {
-                    title: 'Body Jewellery',
-                    showMask: false,
-                },
-                {
-                    title: 'Influencer',
-                    showMask: false,
-                }
-            ],
+            navList:[],
             rightArea: [
                 {
                     type: 'login',
@@ -174,12 +77,13 @@ class Navbar extends Component {
     }
 
 
-    handleClickToCategory = (title, index) => {
+    handleClickToCategory = (id, index) => {
         const { history } = this.props
         this.setState({
             clickTab: index
         }, () => {
-            history.push(`/category/${title}`)
+            document.body.scrollTop = document.documentElement.scrollTop = 0
+            history.push(`/category/${id}`)
         })
     }
 
@@ -193,6 +97,7 @@ class Navbar extends Component {
             break;
        }
        if(url) {
+            document.body.scrollTop = document.documentElement.scrollTop = 0
            this.props.history.push(url)
        }
     }
@@ -221,6 +126,24 @@ class Navbar extends Component {
 
     }
 
+
+    componentDidMount(){
+        axios.get('/index.php?c=api/chimi/nav').then(res => {
+            const { data: { data } = {} } = res || {}
+            const { navList = [] } = data || {}
+            const _navList = navList.map(v => {
+                return {
+                    ...v,
+                    showMask: false
+                }
+            })
+            this.setState({
+                navList: _navList
+            })
+
+        }).catch(e => console.error(e))
+    }
+
     render() {
         const { navList = [], rightArea = [], bgColor, fontColor, logo, currentTab, clickTab } = this.state
         return (
@@ -238,6 +161,7 @@ class Navbar extends Component {
             }}>
                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 60}} onClick={() => {
                   this.props.history.push('/')
+                  
                }}>
                    <img src={logo} alt ='' style={{
                        width: 210,
@@ -254,11 +178,10 @@ class Navbar extends Component {
                        margin: '0 auto',
                        height: '100%',
                        display: 'flex',
-                       justifyContent: 'space-between'
                    }}>
                        {
                            navList.map((value, i) => {
-                               const { title, showMask, items = [] } = value || {}
+                               const { title, id, showMask, items = [] } = value || {}
                                const isCurrntTab = currentTab === i
                                const isClick  = clickTab === i
                                return (
@@ -270,7 +193,7 @@ class Navbar extends Component {
                                     this.handleChangeNavigationStatus(i,false)
                                    }}
                                    onClick={() =>{
-                                       this.handleClickToCategory(title, i)
+                                       this.handleClickToCategory(id, i)
                                    }}
                                    key={`nav-${i}`} id={`tab${i}`} style={{
                                        lineHeight: '80px',
@@ -313,7 +236,7 @@ class Navbar extends Component {
                                                     justifyContent: 'space-between'
                                                 }}>
                                                     {
-                                                        items.map(value => {
+                                                        Array.isArray(items) ? items.map(value => {
                                                             const { title, list = [] } = value || {}
                                                             return (
                                                                 <div>
@@ -341,7 +264,7 @@ class Navbar extends Component {
                                                                     </ul>
                                                                 </div>
                                                             )
-                                                        })
+                                                        }) : null
                                                     }
                                                 </div>
                                             </div> : null

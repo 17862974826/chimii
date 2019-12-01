@@ -65,7 +65,7 @@ const styles = {
 }
 
 export default  (props) => {
-    const { title, subTitle, list = [], style } = props || {}
+    const { title, subTitle, list = [], style, onJumpToDetail } = props || {}
     return (
         <div style={{...styles.container}}>
             <div style={{...styles.wrap}}>
@@ -74,18 +74,21 @@ export default  (props) => {
                 <div style={{...styles.content}}>
                 {
                     list.map((value, i) => {
-                        const { pic, title, price, originPrice, couponText} = value || {}
+                        const { pic, title, price, originPrice, couponText, id} = value || {}
                         return (
-                            <div key={`star-${i}`} style={{ flexShrink: 0, marginRight: i!== 3 ? 30 : 0, position: 'relative', zIndex: '1', ...style }}> 
+                            <div onClick={() => {
+                                if(typeof onJumpToDetail === 'function') onJumpToDetail(id) 
+                            }} key={`star-${i}`} style={{ flexShrink: 0, marginRight: i!== 3 ? 30 : 0, position: 'relative', zIndex: '1', cursor: 'pointer', ...style }}> 
                                 <LazyLoad height={300} offsetVertical={200}>
                                     <img src={pic} alt="name" style={{...styles.image}}/>
                                 </LazyLoad>
-                                <p style={{...styles.name}}>{title}</p>
+                                {title ? <p style={{...styles.name}}>{title}</p> : null}
                                 <p style={{...styles.priceWrap}}>
-                                    <span style={{fontSize: getFontSize(18), color: '#000', marginRight: 4}}>{`$${price}`}</span>
-                                    <span style={{fontSize: getFontSize(18), color: '#999'}}>{`$${originPrice}`}</span>
+                                    {price ?  <span style={{fontSize: getFontSize(18), color: '#000', marginRight: 4}}>{`$${price}`}</span> : null}
+                                    {originPrice ? <span style={{fontSize: getFontSize(18), color: '#999'}}>{`$${originPrice}`}</span> : null}
                                 </p>
-                                <p style={{
+                               {
+                                   couponText ?  <p style={{
                                     position: 'absolute',
                                     left: 0,
                                     top: 242,
@@ -93,7 +96,8 @@ export default  (props) => {
                                     fontSize: getFontSize(18),
                                     padding: '3px 8px 3px 17px',
                                     backgroundColor: '#E83D49'
-                                }}>{couponText}</p>
+                                }}>{couponText}</p> : null
+                               }
                             </div>
                         )
                     })

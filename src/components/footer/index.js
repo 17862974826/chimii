@@ -14,7 +14,7 @@ const styles = {
 			minWidth: 1440,
             margin:  '0 auto',
             display: 'flex',
-            justifyContent: 'space-between'
+            justifyContent: 'space-around'
         },
         title:{
             color: '#fff',

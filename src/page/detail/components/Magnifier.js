@@ -27,9 +27,9 @@ const styles ={
 class Magnifier extends React.Component {
     constructor(props){
         super(props)
+      
         this.state = {
-            currentBigPicIndez: 0,
-            ...props
+            currentBigPicIndez: 0
         }
     }
 
@@ -40,8 +40,11 @@ class Magnifier extends React.Component {
     }
 
     render() {
-        const { list, currentBigPicIndez = 0 } = this.state
-        const { bigPic } = list[currentBigPicIndez]
+        const {  currentBigPicIndez = 0 } = this.state
+        const { list = [] } = this.props
+       
+        const { bigPic } = list[currentBigPicIndez] || {}
+
         return (
             <div >
                 <div>

@@ -67,7 +67,7 @@ const styles = {
 }
 
 export default  (props) => {
-    const { title, subTitle, list = [], history, onChangeNavbarStatus } = props || {}
+    const { title, subTitle, list = [], history } = props || {}
 
     return (
         <div style={{...styles.container}}>

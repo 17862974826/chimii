@@ -1,5 +1,9 @@
 import React from 'react'
 import Item from '../../components/Items'
+import axios from 'axios'
+import {
+    withRouter
+    } from "react-router-dom";
 const styles = {
     wrap: {
         width: 1440,
@@ -12,7 +16,7 @@ const styles = {
         width: 720,
         margin: '0 auto',
         height: 62,
-        borderBottom: '1px solid, #666'
+        borderBottom: '1px solid #666'
     },
     input: {
         width: 690,
@@ -44,45 +48,48 @@ class SearchResult extends React.Component {
 
     constructor(props){
         super(props)
+        this.isloading = false
         this.state = {
-            itemList: [
-                {
-                    title: 'ITEM NAME',
-                    price: 20,
-                    originPrice: '40.00',
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                },
-                {
-                    title: 'ITEM NAME',
-                    price: 20,
-                    originPrice: '40.00',
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                },
-                {
-                    title: 'ITEM NAME',
-                    price: 20,
-                    originPrice: '40.00',
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                },
-                {
-                    title: 'ITEM NAME',
-                    price: 20,
-                    originPrice: '40.00',
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                }
-            ],
-            influencerList: [
-                {
-                    pic: "https://s1.ax1x.com/2019/11/19/MRP78J.png",
-                    name: "name",
-                    desc: 'moment 27'
-                },
-                {
-                    pic: "https://s1.ax1x.com/2019/11/19/MRP78J.png",
-                    name: "name",
-                    desc: 'moment 27'
-                }
-            ]
+            itemList: [],
+            influencerList: []
+            // itemList: [
+            //     {
+            //         title: 'ITEM NAME',
+            //         price: 20,
+            //         originPrice: '40.00',
+            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
+            //     },
+            //     {
+            //         title: 'ITEM NAME',
+            //         price: 20,
+            //         originPrice: '40.00',
+            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
+            //     },
+            //     {
+            //         title: 'ITEM NAME',
+            //         price: 20,
+            //         originPrice: '40.00',
+            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
+            //     },
+            //     {
+            //         title: 'ITEM NAME',
+            //         price: 20,
+            //         originPrice: '40.00',
+            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
+            //     }
+            // ],
+            // influencerList: [
+            //     {
+            //         pic: "https://s1.ax1x.com/2019/11/19/MRP78J.png",
+            //         name: "name",
+            //         desc: 'moment 27'
+            //     },
+            //     {
+            //         pic: "https://s1.ax1x.com/2019/11/19/MRP78J.png",
+            //         name: "name",
+            //         desc: 'moment 27'
+            //     }
+            // ]
         }
     }
 
@@ -93,11 +100,30 @@ class SearchResult extends React.Component {
     }
 
     handleGetData = () => {
-        alert('No About')
+        this.handleGetSearchDaata(this.inputValue)
+    }
+
+    handleGetSearchDaata = value => {
+        if(this.isloading) return 
+        this.isloading = true
+        const { match: { params } = {} } = this.props
+        const { q: query } = params || {}
+        axios.get(`/index.php?c=api/chimi/search&q=${value || query}`).then(res => {
+            const { data: { data } = {}} = res || {}
+           const { itemList = [] } = data || {}
+           this.setState({
+                itemList
+            })
+            this.isloading = false
+        }).catch(error => {
+            this.isloading = false
+            console.error(error)
+        })
     }
 
 
     componentDidMount(){
+        this.handleGetSearchDaata()
         window.addEventListener('keydown', this.handleKeyDownSearch)
     }
 
@@ -106,12 +132,17 @@ class SearchResult extends React.Component {
     }
 
 
+    componentWillReceiveProps() {
+        this.handleGetSearchDaata()
+    }
+
+
     render() {
         const { itemList, influencerList } = this.state
         return (
             <div style={{...styles.wrap}}>
                 <div style={{...styles.inputWrap}}>
-                    <input type="text" style={{...styles.input}} placeholder={'search'} />
+                    <input type="text" style={{...styles.input}} placeholder={'search'} onChange={e => this.inputValue = e.target.value}/>
                     <img src={'https://s2.ax1x.com/2019/11/22/M7bJpQ.png'} alt="" style={{...styles.searchIcon}} onClick={this.handleGetData}/>
                 </div>
                 <div style={{...styles.content}}>
@@ -151,4 +182,4 @@ class SearchResult extends React.Component {
 
 }
 
-export default SearchResult
+export default withRouter(SearchResult)

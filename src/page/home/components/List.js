@@ -57,10 +57,10 @@ export default  (props) => {
                 <div style={{...styles.content}}>
                 {
                     list.map((value, i) => {
-                        const { pic} = value || {}
+                        const { pic } = value || {}
                         return (
                             <div key={`itemlist-${i}`}  style={{ margin: i === 1 || i === 4 ? '0px 30px' : 0 }} > 
-                                <LazyLoad height={360} offsetVertical={200}>
+                                <LazyLoad height={360} offsetVertical={200} style={{background: '#ccc'}}>
                                     <img src={pic} alt="name" style={{...styles.image}}/>
                                 </LazyLoad>
                             </div>

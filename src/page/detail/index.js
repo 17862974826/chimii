@@ -1,5 +1,9 @@
 import React from 'react'
 import  Magnifier from './components/Magnifier'
+import axios from 'axios'
+import {
+    withRouter
+    } from "react-router-dom";
 
 const styles = {
     wrap: {
@@ -165,52 +169,11 @@ const styles = {
 class Detail extends React.Component {
 
     state = {
-        title: 'ITEM NAME',
-        desc: 'xxx say  soooo cute～～～～',
-        price: '20.00',
-        originPrice: '40.00',
-        coupon: '50% OFF',
-        like: '多少人like',
-        share: '多少人share',
+        productInfo: {},
         MagnifierData: {
-            list:[
-                {
-                    pic: 'http://pic3.iqiyipic.com/common/lego/20191118/4781558055a04f70a07e9ffb8bc0d04c.webp',
-                    bigPic: 'http://pic3.iqiyipic.com/common/lego/20191118/4781558055a04f70a07e9ffb8bc0d04c.webp'
-                },
-                {
-                    pic: 'http://pic7.iqiyipic.com/image/20191119/50/1c/v_141309903_m_601_220_124.webp',
-                    bigPic: 'http://pic7.iqiyipic.com/image/20191119/50/1c/v_141309903_m_601_220_124.webp'
-                },
-                {
-                    pic: 'http://pic3.iqiyipic.com/common/lego/20191119/c995776065c04a469d64e8ba5be0e36d.webp',
-                    bigPic: 'http://pic3.iqiyipic.com/common/lego/20191119/c995776065c04a469d64e8ba5be0e36d.webp'
-                }
-            ]
+            list:[]
         },
-        recommendItem: [
-            {
-                pic: 'http://pic3.iqiyipic.com/common/lego/20191118/4781558055a04f70a07e9ffb8bc0d04c.webp',
-                price: '20.00',
-                originPrice: '40.00',
-                coupon: '50% OFF',
-                title: 'ITEM NAME',
-            },
-            {
-                pic: 'http://pic3.iqiyipic.com/common/lego/20191118/4781558055a04f70a07e9ffb8bc0d04c.webp',
-                price: '20.00',
-                originPrice: '40.00',
-                coupon: '50% OFF',
-                title: 'ITEM NAME',
-            },
-            {
-                pic: 'http://pic3.iqiyipic.com/common/lego/20191118/4781558055a04f70a07e9ffb8bc0d04c.webp',
-                price: '20.00',
-                originPrice: '40.00',
-                coupon: '50% OFF',
-                title: 'ITEM NAME',
-            }
-        ],
+        recommendItem: [],
         shareImages: [
             {
                 pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png'
@@ -237,13 +200,47 @@ class Detail extends React.Component {
     }
 
     componentDidMount() {
-        
+        const { match: { params } = {} } = this.props
+        const { id } = params || {}
+        axios.get(`/index.php?c=api/chimi/detail&id=${id}`).then(res => {
+            const { data: { data } = {} } = res || {}
+          
+            this.setState({
+                ...data
+            })
+        }).catch(err => {
+            console.error(err)
+        })
+    }
+
+
+    handleClickAddProduct = () => {
+        const { match: { params } = {} } = this.props
+        const { id } = params || {}
+
+        axios.post('/index.php?c=api/chimipost/addcart',`id=${id}&num=1`, {
+            headers:{
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(res => {
+          const { data: { errorCode } = {} }  = res || {} 
+          if(errorCode === 0) {
+              alert('加购成功')
+          } else {
+            alert('加购失败')   
+          }
+            
+        }).catch(error => {
+            console.log(error)
+        })
     }
 
 
     render() {
        
-        const { title, desc, price, originPrice, coupon, like, share, recommendItem = [], shareImages = [] } = this.state
+        const { productInfo,  recommendItem = [], shareImages = [], } = this.state
+ 
+        const { title = '', desc = '', price = '', originPrice = '', couponText = '', like = '', share = '' } = productInfo || {}
         return (
             <div style={{...styles.wrap}}>
                 <div style={{...styles.container}}>
@@ -255,13 +252,13 @@ class Detail extends React.Component {
                             <p style={{...styles.title}}>{title}</p>
                             <p style={{...styles.desc}}>{desc}</p>
                             <div style={{...styles.priceInfo}}>
-                                <p style={{fontSize: 18, color: '#000', marginRight: 10}}>{`$${price}`}</p>
-                                <p style={{fontSize: 18, color: '#999'}}>{`$${originPrice}`}</p>
+                                { price ? <p style={{fontSize: 18, color: '#000', marginRight: 10}}>{`$${price}`}</p> : null}
+                               { originPrice ?  <p style={{fontSize: 18, color: '#999'}}>{`$${originPrice}`}</p> : null }
                             </div>
-                            <p style={{...styles.coupon}}>{coupon}</p>
-                            <p style={{...styles.like}}>{like}</p>
-                            <p style={{...styles.share}}>{share}</p>
-                            <div style={{...styles.buttonWrap}}>
+                           { couponText ?  <p style={{...styles.coupon}}>{couponText}</p> : null }
+                           { like || like === 0?  <p style={{...styles.like}}>{`${like}人喜欢`}</p> : null}
+                            { share || share === 0 ? <p style={{...styles.share}}>{`${share}人分享`}</p> : null}
+                            <div style={{...styles.buttonWrap}} onClick={this.handleClickAddProduct}>
                                 <p style={{...styles.button}}>{'+加入购物车'}</p>
                             </div>
                         </div>
@@ -313,4 +310,4 @@ class Detail extends React.Component {
 }
 
 
-export default Detail
+export default withRouter(Detail)

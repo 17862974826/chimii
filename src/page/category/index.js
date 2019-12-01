@@ -5,6 +5,7 @@ import {
     } from "react-router-dom";
 
 import Item from '../../components/Items'
+import axios from 'axios'
     
 const styles = {
     banner:{
@@ -51,104 +52,106 @@ class Category extends React.Component {
         this.state = {
             banner: 'http://pic3.iqiyipic.com/common/lego/20191122/238dd8ae71754426b8765249756aa105.jpg',
             isFixed: false,
-            tabs: [
-                {
-                    title: 'Popular Styles',
-                    list: [
-                       {
-                            title: 'chinas'
-                       },
-                       {
-                            title: 'chinas'
-                        }
-                    ]
-                },
-                {
-                    title: 'Popular Styles',
-                    list: [
-                       {
-                            title: 'chinas'
-                       },
-                       {
-                            title: 'chinas'
-                        }
-                    ]
-                },
-                {
-                    title: 'Popular Styles',
-                    list: [
-                       {
-                            title: 'chinas'
-                       },
-                       {
-                            title: 'chinas'
-                        }
-                    ]
-                },
-                {
-                    title: 'Popular Styles',
-                    list: [
-                       {
-                            title: 'chinas'
-                       },
-                       {
-                            title: 'chinas'
-                        }
-                    ]
-                },
-                {
-                    title: 'Popular Styles',
-                    list: [
-                       {
-                            title: 'chinas'
-                       },
-                       {
-                            title: 'chinas'
-                        }
-                    ]
-                },
-                {
-                    title: 'Popular Styles',
-                    list: [
-                       {
-                            title: 'chinas'
-                       },
-                       {
-                            title: 'chinas'
-                        }
-                    ]
-                }
-            ],
-            content: [
-                {
-                    title: 'ITEM NAME',
-                    price: 20,
-                    originPrice: '40.00',
-                    couponText: '50% OFF',
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                },
-                {
-                    title: 'ITEM NAME',
-                    price: 20,
-                    originPrice: '40.00',
-                    couponText: '50% OFF',
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                },
-                {
-                    title: 'ITEM NAME',
-                    price: 20,
-                    originPrice: '40.00',
-                    couponText: '50% OFF',
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                },
-                {
-                    title: 'ITEM NAME',
-                    price: 20,
-                    originPrice: '40.00',
-                    couponText: '50% OFF',
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                }
-            ]
+            tabs: [],
+            content: []
+            // tabs: [
+            //     {
+            //         title: 'Popular Styles',
+            //         list: [
+            //            {
+            //                 title: 'chinas'
+            //            },
+            //            {
+            //                 title: 'chinas'
+            //             }
+            //         ]
+            //     },
+            //     {
+            //         title: 'Popular Styles',
+            //         list: [
+            //            {
+            //                 title: 'chinas'
+            //            },
+            //            {
+            //                 title: 'chinas'
+            //             }
+            //         ]
+            //     },
+            //     {
+            //         title: 'Popular Styles',
+            //         list: [
+            //            {
+            //                 title: 'chinas'
+            //            },
+            //            {
+            //                 title: 'chinas'
+            //             }
+            //         ]
+            //     },
+            //     {
+            //         title: 'Popular Styles',
+            //         list: [
+            //            {
+            //                 title: 'chinas'
+            //            },
+            //            {
+            //                 title: 'chinas'
+            //             }
+            //         ]
+            //     },
+            //     {
+            //         title: 'Popular Styles',
+            //         list: [
+            //            {
+            //                 title: 'chinas'
+            //            },
+            //            {
+            //                 title: 'chinas'
+            //             }
+            //         ]
+            //     },
+            //     {
+            //         title: 'Popular Styles',
+            //         list: [
+            //            {
+            //                 title: 'chinas'
+            //            },
+            //            {
+            //                 title: 'chinas'
+            //             }
+            //         ]
+            //     }
+            // ],
+            // content: [
+            //     {
+            //         title: 'ITEM NAME',
+            //         price: 20,
+            //         originPrice: '40.00',
+            //         couponText: '50% OFF',
+            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
+            //     },
+            //     {
+            //         title: 'ITEM NAME',
+            //         price: 20,
+            //         originPrice: '40.00',
+            //         couponText: '50% OFF',
+            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
+            //     },
+            //     {
+            //         title: 'ITEM NAME',
+            //         price: 20,
+            //         originPrice: '40.00',
+            //         couponText: '50% OFF',
+            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
+            //     },
+            //     {
+            //         title: 'ITEM NAME',
+            //         price: 20,
+            //         originPrice: '40.00',
+            //         couponText: '50% OFF',
+            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
+            //     }
+            // ]
         }
         
     }
@@ -175,6 +178,27 @@ class Category extends React.Component {
     }
 
     componentDidMount() {
+
+        const { match: { params = {}} = {}, history } = this.props
+        let { cate } = params || {}
+        cate = 4
+        axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
+           const { data: { data } = {} } = res || {}
+           const { tabs = {}, content} = data || {}
+           const { items } = tabs || {}
+          
+           if(Array.isArray(content) && content.length) {
+                this.setState({
+                    tabs: items,
+                    content
+                })
+           } else {
+                history.push('/error')
+           }
+        }).catch(error => { 
+            history.push('/error')
+        })
+
         const tabInfo = document.getElementById('tabInfo')
         this.scrollTop = tabInfo && tabInfo.offsetTop
         this.scrollLeft = document.getElementById('tabWrap').offsetLeft
