@@ -1,7 +1,7 @@
 
 import React from 'react'
-import { getFontSize } from '../../../util'
-import LazyLoad from 'react-lazy-load'
+
+import '../../../App.css'
 
 const styles = {
     container:{
@@ -10,59 +10,60 @@ const styles = {
         justifyContent: 'center'
     },
     wrap: {
-        width: 1440,
-        height: 785,
+        width: 1110,
+        height: 487,
         overflow: 'hidden'
     },
     title:{
-        fontSize: getFontSize(46),
-        lineHeight: '46px',
+        fontSize: 36,
+        lineHeight: '36px',
         fontWeight: '500',
-        height: 46,
+        height: 36,
         color: '#333',
         textAlign: 'center'
     },
     subTitle:{
-        marginTop: 20,
+        marginTop: 10,
         marginBottom: 30,
         fontWeight: '500',
-        fontSize: getFontSize(24),
-        lineHeight: '24px',
-        height: 24,
+        fontSize: 20,
+        lineHeight: '20px',
+        height: 20,
         color: '#333',
         textAlign: 'center' 
     },
     content: {
-        height: 575,
-        minHeight: 575,
+        height: 390,
+        minHeight: 390,
         display: 'flex',
-        justifyContent: 'center'
+        overflow: 'hidden',
+        justifyContent: 'space-between'
     },
     image:{
-        width: 360,
-        height: 480,
+        width: 240,
+        height: 320,
         objectFit: 'cover'
     },
     name:{
-        width: 360,
-        height: 30,
-        marginTop: 30,
-        marginBottom: 20,
-        overflow: 'hidden',
-        lineHeight: '30px',
-        color: '#333',
-        fontWeight: '500',
-        textOverflow: 'ellipsis',
-        fontSize: getFontSize(30),
-    },
-    desc:{
-        width: 360,
-        height: 24,
+        width: 240,
+        marginTop: 5,
+        marginBottom: 10,
         overflow: 'hidden',
         lineHeight: '24px',
         color: '#333',
+        fontWeight: '500',
         textOverflow: 'ellipsis',
-        fontSize: getFontSize(24),
+        fontSize: 16,
+        height: 24,
+    },
+    desc:{
+        width: 240,
+        height: 20,
+        overflow: 'hidden',
+        lineHeight: '20px',
+        color: '#333',
+        textOverflow: 'ellipsis',
+        fontSize: 12
     }
 }
 
@@ -86,13 +87,10 @@ export default  (props) => {
                             <div onClick={() => {
                                 history.push('/celebrity/1')
                                 document.body.scrollTop = document.documentElement.scrollTop = 0
-                             
-							}} key={`star-${i}`} style={{ margin: i === 1 ? '0px 30px' : 0 }}> 
-                                <LazyLoad height={480} offsetVertical={300}>
+							}} key={`star-${i}`} style={{cursor: 'pointer', position: 'relative' }} > 
                                     <img src={pic} alt="name" style={{...styles.image}}/>
-                                </LazyLoad>
-                                <p style={{...styles.name}}>{name}</p>
-                                <p style={{...styles.desc}}>{desc}</p>
+                                    <p style={{...styles.name}}>{name}</p>
+                                    <p style={{...styles.desc}}>{desc}</p>
                             </div>
                         )
                     })

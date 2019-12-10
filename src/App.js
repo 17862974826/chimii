@@ -17,6 +17,12 @@ import Cart from './page/cart'
 import Payment from './page/payment'
 
 
+const RouteEnter = (props) => {
+  document.body.scrollTop = document.documentElement.scrollTop = 0
+  return props.children
+}
+
+
 class App extends React.Component {
 
 
@@ -47,7 +53,9 @@ class App extends React.Component {
         <Navbar {...navbarParams}/>
         <Switch>
             <Route path="/" exact>
-              <Home onChangeNavbarStatus={this.handleChangeNavbarStatus} />
+              <RouteEnter>
+                <Home onChRouteEnterngeNavbarStatus={this.handleChangeNavbarStatus} />
+              </RouteEnter>
             </Route>
             <Route path="/detail/:id" exact>
               <Detail />

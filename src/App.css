@@ -5,27 +5,50 @@
     align-items: center
 }
 
+.item1 {
+  transform: rotate3d(0,1,0, 180deg);
+  transition: all 0.3s;
+  backface-visibility: hidden;
+}
+.item {
+  transform: rotate(0);
+  transition: all 0.3s;
+  backface-visibility: hidden;
+}
+.back {
+  transform: rotate3d(0,1,0, -180deg);
+  transition: all 0.3s;
+  backface-visibility: visible;
+}
+.back1 {
+  transform:rotate3d(0,1,0, 0deg);
+  transition: all 0.3s;
+  backface-visibility: visible;
+}
+
+
+
 .star {
     position: fixed;
-    top: 80px;
+    top: 50px;
     width: 880px;
-    right: -880px;
-    height: calc(100vh - 80px);
+    right: -882px;
+    height: calc(100vh - 50px);
     background: #fff;
     transform: translateX(0px);
     z-index: 100;
   }
   .star-enter-active {
     opacity: 1;
-    transform: translateX(-880px);
+    transform: translateX(-882px);
     transition: all 300ms ease-out;
   }
 
   .star-enter-done {
-      transform: translateX(-880px)
+      transform: translateX(-882px)
   }
   .star-exit {
-    transform: translateX(-880px);
+    transform: translateX(-882px);
   }
   .star-exit-active {
     transform: translateX(0px);

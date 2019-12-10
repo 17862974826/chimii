@@ -1,68 +1,124 @@
 
-import React from 'react'
-import { getFontSize } from '../../../util'
-import LazyLoad from 'react-lazy-load'
+import React, { useState } from 'react'
+import Collect from '../../../components/collection/' 
+import '../../../App.css'
 
 const styles = {
     container:{
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
-        cursor: 'pointer'
+        marginTop: 60,
     },
     wrap: {
-        width: 1440,
-        height: 950,
+        width: 1110,
+        height: 426,
+        minHeight: 426,
         overflow: 'hidden'
     },
     title:{
-        fontSize: getFontSize(46),
-        lineHeight: '46px',
+        fontSize: 36,
+        lineHeight: '36px',
         fontWeight: '500',
-        height: 46,
+        height: 36,
         color: '#333',
         textAlign: 'center'
     },
     subTitle:{
-        marginTop: 20,
+        marginTop: 10,
         fontWeight: '500',
         marginBottom: 30,
-        fontSize: getFontSize(24),
-        lineHeight: '24px',
-        height: 24,
+        fontSize: 20,
+        lineHeight: '20px',
+        height: 20,
         color: '#333',
         textAlign: 'center' 
     },
     content: {
-        height: 740,
-        minHeight: 740,
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'center'
+        height: 320,
+        overflow: 'hidden',
+        justifyContent: 'space-between'
     },
     image:{
-        width: 360,
-        height: 360,
+        width: 240,
+        height: 320,
         objectFit: 'cover'
     }
 }
 
 export default  (props) => {
-    const { title, subTitle, list = [],onJumpToDetail  } = props || {}
+    const { title, subTitle, list = [], onJumpToDetail, history  } = props || {}
+
+    const defaultList = list.map(v => ({
+        star: 'item',
+        item: 'back'
+    }))
+    
+    const [classNameList, setClassName] = useState(defaultList)
+
+
+    const handleProcesscClassStatus = (id, status) => {
+        const _classNameList = classNameList.map((v, i) => {
+            if(status) {
+                if(id === `card${i}` ) {
+                    return status
+                }
+                return v
+            }
+            return {
+                star: 'item',
+                item: 'back'
+            }
+        })
+        setClassName(_classNameList)
+    }
+
     return (
-        <div style={{...styles.container}} onClick={onJumpToDetail}>
+        <div style={{...styles.container}}>
             <div style={{...styles.wrap}}>
                 <p style={{...styles.title}}>{title}</p>
                 <p  style={{...styles.subTitle}}>{subTitle}</p>
                 <div style={{...styles.content}}>
                 {
                     list.map((value, i) => {
-                        const { pic } = value || {}
+                        const { pic, couponText, id, isLike, desc, price, title, originPrice, itemPic } = value || {}
+                       
                         return (
-                            <div key={`itemlist-${i}`}  style={{ margin: i === 1 || i === 4 ? '0px 30px' : 0 }} > 
-                                <LazyLoad height={360} offsetVertical={200} style={{background: '#ccc'}}>
-                                    <img src={pic} alt="name" style={{...styles.image}}/>
-                                </LazyLoad>
+                            <div 
+                            onClick={e => {
+                                history.push(`/detail/${id}`)
+                                document.body.scrollTop = document.documentElement.scrollTop = 0
+                            }} 
+                            key={`itemlist-${i}`} 
+                            style={{cursor: 'pointer', position: 'relative', perspective:1200 }} 
+                            onMouseEnter={(e) => {
+                                const id = e.target.id
+                                handleProcesscClassStatus(id, {
+                                    star: 'item1',
+                                    item: 'back1'
+                                })         
+
+                            }} 
+                            onMouseLeave={e => {
+                                const id = e.target.id
+                                handleProcesscClassStatus(id) 
+                            }}>     
+                                  <div  className={classNameList[i] && classNameList[i].star} style={{ position: 'absolute', height: 320, overflow: 'hidden', top: 0, left: 0, background: '#fff', zIndex: 1}}>
+                                        <img  id={`card${i}`} src={pic} alt="" style={{...styles.image}}/>
+                                  </div>
+                                  <div  className={classNameList[i] && classNameList[i].item} style={{width: 240, height: 320, background: '#F0F0F0'}}>
+                                      <img src={itemPic} alt="" style={{width: 240, height: 240, objectFit: 'cover'}}/>
+                                      <div style={{marginTop: 10}}>
+                                           {title ?  <p style={{marginBottom: 7, fontSize: 12, color: '#000', textAlign: 'center'}}>{title}</p> : null }
+                                           <div style={{display: 'flex', justifyContent: 'center'}}>
+                                                {price ? <p style={{fontSize: 12, color: '#000',marginRight: 7}}>{`$${price}`}</p> : null}
+                                                {originPrice ? <p style={{fontSize: 12, color: '#999'}}>{`$${originPrice}`}</p> : null}
+                                           </div>
+                                      </div>
+                                  </div>
+                                  <Collect isCollect={isLike} id={id}/>
                             </div>
                         )
                     })

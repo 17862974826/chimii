@@ -1,103 +1,128 @@
 
-import React from 'react'
-import { getFontSize } from '../../../util'
-import LazyLoad from 'react-lazy-load'
+import React, { useState } from 'react'
+import Collect from '../../../components/collection/' 
+import '../../../App.css'
 
 const styles = {
     container:{
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center'
+        justifyContent: 'center',
+        marginTop: 60,
     },
     wrap: {
-        width: 1440,
-        height: 650,
+        width: 1110,
+        height: 426,
+        minHeight: 426,
         overflow: 'hidden'
     },
     title:{
-        fontSize: getFontSize(46),
-        lineHeight: '46px',
+        fontSize: 36,
+        lineHeight: '36px',
         fontWeight: '500',
-        height: 46,
+        height: 36,
         color: '#921C59',
         textAlign: 'center'
     },
     subTitle:{
-        marginTop: 20,
-        marginBottom: 30,
+        marginTop: 10,
         fontWeight: '500',
-        fontSize: getFontSize(24),
-        lineHeight: '24px',
-        height: 24,
+        marginBottom: 30,
+        fontSize: 20,
+        lineHeight: '20px',
+        height: 20,
         color: '#921C59',
         textAlign: 'center' 
     },
     content: {
-        height: 382,
-        minHeight: 382,
         display: 'flex',
-        justifyContent: 'center'
+        flexWrap: 'wrap',
+        height: 320,
+        overflow: 'hidden',
+        justifyContent: 'space-between'
     },
     image:{
-        width: 300,
-        height: 300,
+        width: 240,
+        height: 320,
         objectFit: 'cover'
-    },
-    name:{
-        width: 300,
-        height: 24,
-        marginTop: 15,
-        marginBottom: 12,
-        overflow: 'hidden',
-        lineHeight: '24px',
-        color: '#333',
-        fontWeight: '500',
-        textOverflow: 'ellipsis',
-        fontSize: getFontSize(24),
-    },
-    priceWrap:{
-        width: 300,
-        height: 24,
-        overflow: 'hidden',
-        display: 'flex',
-
     }
 }
 
 export default  (props) => {
-    const { title, subTitle, list = [], style, onJumpToDetail } = props || {}
+    const { title, subTitle, list = [], history  } = props || {}
+    
+    if(!Array.isArray(list) || !list.length) return null
+    
+    const defaultList = list.map(v => ({
+        star: 'item',
+        item: 'back'
+    }))
+    
+    const [classNameList, setClassName] = useState(defaultList)
+
+
+    const handleProcesscClassStatus = (id, status) => {
+        const _classNameList = classNameList.map((v, i) => {
+            if(status) {
+                if(id === `card${i}` ) {
+                    return status
+                }
+                return v
+            }
+            return {
+                star: 'item',
+                item: 'back'
+            }
+        })
+        setClassName(_classNameList)
+    }
+
+
     return (
-        <div style={{...styles.container}}>
+        <div style={{...styles.container}} >
             <div style={{...styles.wrap}}>
                 <p style={{...styles.title}}>{title}</p>
                 <p  style={{...styles.subTitle}}>{subTitle}</p>
                 <div style={{...styles.content}}>
                 {
                     list.map((value, i) => {
-                        const { pic, title, price, originPrice, couponText, id} = value || {}
+                        const { pic, couponText, id, isLike, desc, price, title, originPrice, itemPic } = value || {}
+                      
                         return (
-                            <div onClick={() => {
-                                if(typeof onJumpToDetail === 'function') onJumpToDetail(id) 
-                            }} key={`star-${i}`} style={{ flexShrink: 0, marginRight: i!== 3 ? 30 : 0, position: 'relative', zIndex: '1', cursor: 'pointer', ...style }}> 
-                                <LazyLoad height={300} offsetVertical={200}>
-                                    <img src={pic} alt="name" style={{...styles.image}}/>
-                                </LazyLoad>
-                                {title ? <p style={{...styles.name}}>{title}</p> : null}
-                                <p style={{...styles.priceWrap}}>
-                                    {price ?  <span style={{fontSize: getFontSize(18), color: '#000', marginRight: 4}}>{`$${price}`}</span> : null}
-                                    {originPrice ? <span style={{fontSize: getFontSize(18), color: '#999'}}>{`$${originPrice}`}</span> : null}
-                                </p>
-                               {
-                                   couponText ?  <p style={{
-                                    position: 'absolute',
-                                    left: 0,
-                                    top: 242,
-                                    color: '#fff',
-                                    fontSize: getFontSize(18),
-                                    padding: '3px 8px 3px 17px',
-                                    backgroundColor: '#E83D49'
-                                }}>{couponText}</p> : null
-                               }
+                            <div 
+                            onClick={() => {
+                                history.push(`/detail/${id}`)
+                                document.body.scrollTop = document.documentElement.scrollTop = 0
+                            }} 
+                            key={`itemlist-${i}`} 
+                            style={{cursor: 'pointer', position: 'relative', perspective:1200 }} 
+                            onMouseEnter={(e) => {
+                                const id = e.target.id
+                              
+                                handleProcesscClassStatus(id, {
+                                    star: 'item1',
+                                    item: 'back1'
+                                })         
+
+                            }} 
+                            onMouseLeave={e => {
+                                const id = e.target.id
+                                handleProcesscClassStatus(id) 
+                            }}>     
+                                <div  className={classNameList[i] && classNameList[i].star} style={{ position: 'absolute', height: 320, overflow: 'hidden', top: 0, left: 0, background: '#fff', zIndex: 1}}>
+                                        <img  id={`card${i}`} src={pic} alt="" style={{...styles.image}}/>
+                                  </div>
+                                  <div  className={classNameList[i] && classNameList[i].item} style={{width: 240, height: 320, background: '#F0F0F0'}}>
+                                      <img src={itemPic} alt="" style={{width: 240, height: 240, objectFit: 'cover'}}/>
+                                      <div style={{marginTop: 16}}>
+                                           {title ?  <p style={{marginBottom: 10, fontSize: 12, color: '#000', textAlign: 'center'}}>{title}</p> : null }
+                                           <div style={{display: 'flex', justifyContent: 'center'}}>
+                                                {price ? <p style={{fontSize: 12, color: '#000', marginRight: 7}}>{`$${price}`}</p> : null}
+                                                {originPrice ? <p style={{fontSize: 12, color: '#999'}}>{`$${originPrice}`}</p> : null}
+                                           </div>
+                                      </div>
+                                  </div>
+                                  <Collect isCollect={isLike} id={id}/>
                             </div>
                         )
                     })

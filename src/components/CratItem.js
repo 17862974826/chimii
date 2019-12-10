@@ -23,12 +23,11 @@ const styles = {
     pic: {
         width: 300,
         marginRight: 60,
-        border: '1px solid #999',
         height: 300,
         objectFit: 'cover'
     },
     content: {
-        boxSizing: 'border-box',
+        boxSizing: 'onDelteILike-box',
         height: 300,
         paddingBottom: 50
     },
@@ -57,7 +56,7 @@ const styles = {
 
 
 export default  (props) => {
-    const { pic, title ,desc, price, originPrice} = props || {}
+    const { pic, title ,desc, price, originPrice, onDelteILike, id} = props || {}
         return (
             <div  style={{...styles.cellWrap}}>
                 <img src={pic} alt="" style={{...styles.pic}}/>
@@ -68,7 +67,9 @@ export default  (props) => {
                         <span style={{...styles.price}}>{`$${price}`}</span>
                         <span  style={{...styles.originPrice}}>{`$${originPrice}`}</span>
                     </div>
-                    <p style={{marginTop: 87, fontSize: 24, color: '#000', cursor: 'pointer'}}>{'Delete'}</p>
+                    <p style={{marginTop: 87, fontSize: 24, color: '#000', cursor: 'pointer'}} onClick={() => {
+                        if(typeof onDelteILike === 'function') onDelteILike(id)
+                    }}>{'Delete'}</p>
                 </div>
             </div>
         )

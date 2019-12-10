@@ -1,6 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import Item from '../CratItem'
+import axios from 'axios'
 
 const styles = {
     wrap: {
@@ -64,37 +65,73 @@ class ILike extends React.Component {
     constructor(props){
         super(props)
         this.state = {
-            list: [
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'ITEM NAME',
-                    desc: 'xxx say  “soooo cute～”',
-                    price: '20.00',
-                    originPrice: '40.00'
-                },
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'ITEM NAME',
-                    desc: 'xxx say  “soooo cute～”',
-                    price: '20.00',
-                    originPrice: '40.00'
-                },
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'ITEM NAME',
-                    desc: 'xxx say  “soooo cute～”',
-                    price: '20.00',
-                    originPrice: '40.00'
-                },
-                {
-                    pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-                    title: 'ITEM NAME',
-                    desc: 'xxx say  “soooo cute～”',
-                    price: '20.00',
-                    originPrice: '40.00'
-                }
-            ]
+            list: []
         }
+    }
+
+
+    handleGetLikeData = () => {
+        axios.get('/index.php?c=api/chimi/like').then(res => {
+            const { data: { data = {} } = {} } = res || {}
+            const { list } = data || {}
+            if(Array.isArray(list) && list.length) {
+                this.setState({
+                    list
+                })
+            }
+        }).catch(err => {
+            console.error(err)
+        })
+    }
+
+    componentDidMount(){
+        this.handleGetLikeData()
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        const { list: nextList } = nextState
+        const { list } = this.state
+        if(list.length !== nextList.length) return true
+
+        return  false
+    }
+
+    notifyMessage = message => {
+        alert(message)
+    }
+
+     handleProcessRequestFormData = (id) => {
+        const json = {
+            id,
+            type: 'item',
+            action: 'del' 
+        }
+
+        return Object.keys(json).map(v => {
+            return `${v}=${json[v]}`
+        }).join('&')
+    }
+
+
+    handleDelteILike = (id) => {
+       if(!id) {
+           this.notifyMessage('失败')
+       }
+       axios.post('/index.php?c=api/chimipost/addlike',this.handleProcessRequestFormData(id), {
+        headers:{
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
+    }).then(res => {
+      const { data: { errorCode } = {} }  = res || {} 
+      if(errorCode === 0 || errorCode === '0') {
+        this.notifyMessage('成功')
+        window.location.reload()
+      } else {
+        this.notifyMessage('失败')
+      }
+    }).catch(error => {
+        console.log(error)
+    })
     }
 
     render() {
@@ -105,7 +142,7 @@ class ILike extends React.Component {
                     <div>
                         {
                             list.map((v, i) => {
-                                return <Item {...v} key={`ilike-${i}`} />
+                                return <Item {...v} key={`ilike-${i}`} onDelteILike={this.handleDelteILike}/>
                             })
                         }
                     </div>

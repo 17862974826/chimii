@@ -57,7 +57,7 @@ class Navbar extends Component {
     initStaticConfig = () => {
         this.bgColor = '#fff'
         this.fontColor = '#000'
-        this.logo = 'https://s1.ax1x.com/2019/11/19/MREFfS.png'
+        this.logo = 'https://s2.ax1x.com/2019/12/04/Q1Y6IO.png'
         if(/detail/.test(window.location.href)) {
             this.bgColor = '#000'
             this.fontColor = '#fff'
@@ -148,12 +148,12 @@ class Navbar extends Component {
         const { navList = [], rightArea = [], bgColor, fontColor, logo, currentTab, clickTab } = this.state
         return (
             <div style={{
-                height: 80,
+                height: 50,
                 position: 'sticky',
                 zIndex: 20,
                 top: 0,
                 left: 0,
-                minHeight: 80,
+                minHeight: 50,
                 minWidth: 1440,
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -164,17 +164,15 @@ class Navbar extends Component {
                   
                }}>
                    <img src={logo} alt ='' style={{
-                       width: 210,
-                       height: 50,
+                       width: 117,
+                       height: 25,
                        objectFit: 'contain'
                    }}/>
                </div>
                <div style={{
-                   width: 1440,
                    height: '100%'
                }}>
                    <div style={{
-                       width: 780,
                        margin: '0 auto',
                        height: '100%',
                        display: 'flex',
@@ -196,18 +194,21 @@ class Navbar extends Component {
                                        this.handleClickToCategory(id, i)
                                    }}
                                    key={`nav-${i}`} id={`tab${i}`} style={{
-                                       lineHeight: '80px',
-                                       height: 90,
+                                       lineHeight: '50px',
+                                       height: 50,
                                        color: fontColor,
-                                       fontSize: getFontSize(20),
-                                       paddingLeft: 9,
-                                       paddingRight: 9,
+                                       fontSize: 12,
+                                       fontWeight: 'bold',
+                                       paddingLeft: 15,
+                                       paddingRight: 15,
                                        fontFamily: 'Helvetica',
                                    }}>
                                        <div style={{position: 'relative'}}>
                                             <p style={{
                                                 color: isClick ? '#921C59': fontColor,
-                                                fontSize: getFontSize(20),
+                                                fontSize: 12,
+                                                height: 50,
+                                                lineHeight: '55px',
                                                 cursor: 'pointer',
                                             }}>{title}</p>
                                             {
@@ -219,7 +220,7 @@ class Navbar extends Component {
                                             <div 
                                             style={{
                                                 position: 'absolute',
-                                                top: 80,
+                                                top: 50,
                                                 paddingTop: 51,
                                                 left: 0,
                                                 right: 0,
@@ -233,7 +234,7 @@ class Navbar extends Component {
                                                     paddingRight: 24,
                                                     margin: '0 auto',
                                                     display: 'flex',
-                                                    justifyContent: 'space-between'
+                                                    justifyContent: 'space-around'
                                                 }}>
                                                     {
                                                         Array.isArray(items) ? items.map(value => {
@@ -241,8 +242,8 @@ class Navbar extends Component {
                                                             return (
                                                                 <div>
                                                                     <p style={{
-                                                                        fontSize: getFontSize(20),
-                                                                        lineHeight: '24px',
+                                                                        fontSize: 12,
+                                                                        lineHeight: '12px',
                                                                         color: '#333',
                                                                         fontFamily: 'Helvetica',
                                                                         fontWeight: 'bold'
@@ -250,16 +251,16 @@ class Navbar extends Component {
                                                                     >{title}</p>
                                                                     <ul>
                                                                         {
-                                                                           list.map((value, i) => (<li key={`li-${i}`} style={{
+                                                                           Array.isArray(list) ? list.map((value, i) => (<li key={`li-${i}`} style={{
                                                                                marginTop: 30,
-                                                                               fontSize: getFontSize(20),
+                                                                               fontSize: 12,
                                                                                height: 24,
-                                                                               lineHeight: '24px',
+                                                                               lineHeight: '12px',
                                                                                color: '#333',
                                                                                width: 167,
                                                                                overflow: 'hidden',
                                                                                textOverflow: 'ellipsis'
-                                                                           }}>{value.title}</li>)) 
+                                                                           }}>{value.title}</li>))  : null
                                                                         }
                                                                     </ul>
                                                                 </div>
@@ -323,16 +324,15 @@ class Navbar extends Component {
                         show: false
                     })
                 }}>
-                   <div style={{width: 390, height: 80, display: 'flex', alignItems: 'center'}}>
+                   <div style={{height: 50, display: 'flex', alignItems: 'center'}}>
                        {
                            rightArea.map((v, i) => {
-                                const { title, icon, type} =  v || {}
+                                const {  icon, type} =  v || {}
                                 return (
-                                    <div key={`rightArea-${i}`} id={i} style={{display: 'flex', cursor: 'pointer', marginRight: 30, height: 80, alignItems: 'center'}} onClick={() => {
+                                    <div key={`rightArea-${i}`} id={i} style={{display: 'flex', cursor: 'pointer', marginRight: 30, height: 50, alignItems: 'center'}} onClick={() => {
                                         this.handleJumuToPath(type)
                                     }}>
-                                        <img src={icon} alt="" style={{width: 20, height: 20, marginRight: 4}} id={i}/>
-                                        <p style={{fontSize: 16, color: fontColor}} id={i}>{title}</p>
+                                        <img src={icon} alt="" style={{width: 20, height: 20 }} id={i}/>
                                     </div>
                                 )
                            })

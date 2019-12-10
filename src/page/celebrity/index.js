@@ -5,6 +5,7 @@ import LazyLoad from 'react-lazy-load'
 import {
     withRouter
     } from "react-router-dom";
+import axios from 'axios'
 
 
 const styles = {
@@ -25,73 +26,28 @@ const styles = {
 class Celebrity extends React.Component {
 
     state = {
-        celeData: {
-            list: [
-                {
-                    sartData: {
-                        pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                        title: 'Name',
-                        desc: 'moment 27'
-                    },
-                    items: [
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        },
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        },
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        },
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        },
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        }
-                    ]
-                },
-                {
-                    sartData: {
-                        pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                        title: 'Name',
-                        desc: 'moment 27'
-                    },
-                    items: [
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        },
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        },
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        },
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        },
-                        {
-                            pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png',
-                            id: '1'
-                        }
-                    ]
-                }
-            ]
-        }
+        celeData: {}
     }
 
     handleJumpToDetail = id => {
         const { history } = this.props
         history.push(`/detail/${id}`)
+    }
+
+    componentDidMount() {
+        const { match: { params } = {} } = this.props
+        const { id } = params || {}
+        axios.get(`/index.php?c=api/chimi/wanghong&id=${id}`).then(res => {
+            const { data: { data } = {} } = res || {}
+            const { list = [] } = data || {}
+            if(Array.isArray(list) && list.length) {
+                this.setState({
+                    celeData: {
+                        list
+                    }
+                })
+            }
+        }).catch(err => console.error(err))
     }
     
     render() {
