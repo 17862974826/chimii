@@ -15,6 +15,7 @@ import Error from './components/Error'
 import Search from './page/search'
 import Cart from './page/cart'
 import Payment from './page/payment'
+import Demo from './Demo'
 
 
 const RouteEnter = (props) => {
@@ -74,6 +75,9 @@ class App extends React.Component {
             </Route>
             <Route path="/payment/:id" exact>
               <Payment />
+            </Route>
+            <Route path="/demo" exact>
+              <Demo />
             </Route>
             <Route path="*">
               <Error />
