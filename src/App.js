@@ -16,6 +16,12 @@ import Search from './page/search'
 import Cart from './page/cart'
 import Payment from './page/payment'
 import Demo from './Demo'
+import Profile from './page/profile'
+
+
+window.profile = {
+  isLogin: false
+}
 
 
 const RouteEnter = (props) => {
@@ -30,8 +36,7 @@ class App extends React.Component {
   state = {
     show: false,
     fontColor: '#000',
-    bgColor: '#fff',
-
+    bgColor: '#fff'
   }
 
   handleChangeNavbarStatus = (params = {} ) => {
@@ -76,6 +81,9 @@ class App extends React.Component {
             <Route path="/payment/:id" exact>
               <Payment />
             </Route>
+            <Route path="/profile">
+              <Profile />
+            </Route>
             <Route path="/demo" exact>
               <Demo />
             </Route>
@@ -83,8 +91,8 @@ class App extends React.Component {
               <Error />
             </Route>
           </Switch>
+          <Footer/>
       </Router>
-    <Footer/>
     </>
     );
   }

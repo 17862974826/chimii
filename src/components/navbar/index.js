@@ -280,14 +280,14 @@ class Navbar extends Component {
                <div  style={{display: 'flex'}} onMouseOver={e => {
                  
                    const id = e.target.id
-                   
+                   const { history } = this.props
                    const { type } = rightArea[id] || {}
 
                    let Component = null
 
                    switch(type) {
                         case 'login':
-                            Component = <Login/>;
+                            Component = <Login history={history}/>;
                          break;
                         case 'search':
                             Component = <Search/>;

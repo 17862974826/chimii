@@ -7,15 +7,15 @@ import axios from 'axios'
 const styles = {
     wrap: {
         position: 'relative',
-        width: 720,
+        width: 500,
         height: 'calc(100vh - 200px)',
         overflow: 'scroll',
-        paddingTop: 105,
-        margin: '0 auto',
+        paddingTop: 30,
+        paddingLeft: 30
     },
     title: {
-        fontSize: 46,
-        lineHeight: '46px',
+        fontSize: 32,
+        lineHeight: '32px',
         color: '#000',
         fontWeight: 'bold',
         marginBottom: 60
@@ -60,9 +60,9 @@ const styles = {
         fontSize: 24
     },
     buttonWrap: {
-        width: 880,
-        height: 90,
-        lineHeight: '90px',
+        width: 500,
+        height: 50,
+        lineHeight: '50px',
         dispaly: 'flex',
         textAlign: 'center',
         alignItems: 'center',
@@ -76,7 +76,15 @@ const styles = {
     buttonText: {
         fontWeight: 'bold',
         color: '#fff',
-        fontSize: 36
+        fontSize: 24
+    },
+    empty: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginLeft: -132,
+        fontSize: 24,
+        color: '#999'
     }
 }
 
@@ -108,21 +116,30 @@ class Cart extends React.Component {
 
     render() {
         const { list } = this.state
-        return (
+        const isShowList = Array.isArray(list) && list.length
+       
+        return  (
             <div style={{...styles.wrap}}>
                 <h2 style={{...styles.title}}>{'Cart'}</h2>
-                    <div>
+                    {
+                        isShowList ? <div>
                         {
                             list.map((v, i) => {
                                 return <Item {...v} key={`Cart-${i}`} />
                             })
                         }
-                    </div>
-                <div style={{...styles.buttonWrap}} onClick={this.handleJumpToPayment}>
-                    <p style={{...styles.buttonText}}>{'Payment'}</p>
-                </div>
+                    </div> : null
+                    }
+                    {
+                        isShowList ? <div style={{...styles.buttonWrap}} onClick={this.handleJumpToPayment}>
+                        <p style={{...styles.buttonText}}>{'Payment'}</p>
+                    </div> : null
+                    }
+                    {
+                        !isShowList ? <p style={{...styles.empty}}>{'Shopping Bag is Empty'}</p> :  null 
+                    }
             </div>
-        )
+        ) 
     }
 }
 

@@ -1,73 +1,81 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const styles = {
-    wrap: {
-        width: 720,
-        paddingTop: 105,
-        margin: '0 auto',
-    },
-    title: {
-        fontSize: 46,
-        lineHeight: '46px',
-        color: '#000',
-        fontWeight: 'bold',
-        marginBottom: 60
-    },
     cellWrap: {
-        width: 633, 
+        width: 347, 
         display: 'flex',
-        height: 300, 
-        marginBottom: 60,
-        overflow: 'hidden'
+        height: 184, 
+        marginBottom: 20,
+        overflow: 'hidden' 
     },
     pic: {
-        width: 300,
-        marginRight: 60,
-        height: 300,
+        width: 180,
+        marginRight: 30,
+        height: 180,
+        border: '1px solid #999',
         objectFit: 'cover'
     },
     content: {
-        boxSizing: 'onDelteILike-box',
-        height: 300,
-        paddingBottom: 50
+        height: 180,
     },
     itemTitle: {
-        marginBottom: 30,
-        fontSize: 24, 
+        marginBottom: 10,
+        fontSize: 16, 
         color: '#333',
         fontWeight: 'bold'
     },
     desc: {
-        marginBottom: 30,
-        fontSize: 24,
+        marginBottom: 16,
+        fontSize: 12,
         color: '#666'
     },
     price: {
-        marginRight: 12,
+        marginRight: 5,
         color: '#000',
-        fontSize: 24
+        fontSize: 16
     },
     originPrice: {
         color: '#999',
-        fontSize: 24
+        fontSize: 16
+    },
+    symbol: {
+        cursor: 'pointer',
+        color: '#333',
+        fontWeight: 'bold'
     }
 
 }
 
 
 export default  (props) => {
-    const { pic, title ,desc, price, originPrice, onDelteILike, id} = props || {}
+    const { count = 1, pic, title ,desc, price, originPrice, onDelteILike, id} = props || {}
+    const [state, setCount ] = useState(count)
+    const handleChangeItemNum = symbol => {
+        let count = state
+        if(symbol) {
+            count +=1 
+        } else {
+            count = count > 0 ? --count : 0
+        }
+      
+        setCount(count)
+    }
         return (
             <div  style={{...styles.cellWrap}}>
                 <img src={pic} alt="" style={{...styles.pic}}/>
                 <div style={{...styles.content}}>
-                    <p style={{...styles.itemTitle}}>{title}</p>
-                    <p style={{...styles.desc }}>{desc}</p>
+                   { title ?  <p style={{...styles.itemTitle}}>{title}</p> : <div style={{...styles.itemTitle}} />}
+                   {  desc ?  <p style={{...styles.desc }}>{desc}</p> : <div style={{...styles.desc }}/>}
                     <div>
                         <span style={{...styles.price}}>{`$${price}`}</span>
                         <span  style={{...styles.originPrice}}>{`$${originPrice}`}</span>
                     </div>
-                    <p style={{marginTop: 87, fontSize: 24, color: '#000', cursor: 'pointer'}} onClick={() => {
+                    <div style={{marginTop: 40, display: 'flex'}}>
+                        <p style={{...styles.symbol}} onClick={handleChangeItemNum.bind(null, 0)}>{'-'}</p>
+                        <p style={{margin: '0 20px'}}>{state}</p>
+                        <p style={{...styles.symbol}} onClick={handleChangeItemNum.bind(null, 1)}>{'+'}</p>
+                    </div>
+                    <p style={{marginTop: 22, fontSize: 12, color: '#000', cursor: 'pointer'}} onClick={() => {
                         if(typeof onDelteILike === 'function') onDelteILike(id)
                     }}>{'Delete'}</p>
                 </div>

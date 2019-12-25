@@ -43,8 +43,11 @@ class Home extends Component {
 		
 		axios.get('/index.php?c=api/chimi/index').then(res => {
 			const { data: { data } = {}  } = res || {}
-			const { HomeData = {} } = data || {}
-		
+			const { HomeData = {}, isLogin } = data || {}
+
+			window.profile.isLogin = isLogin
+			
+			
 			this.setState({
 				...HomeData,
 			})

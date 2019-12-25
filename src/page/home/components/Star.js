@@ -82,10 +82,11 @@ export default  (props) => {
                 <div style={{...styles.content}}>
                 {
                     list.map((value, i) => {
-                        const { pic, name, desc} = value || {}
+                        const { pic, name, desc, id} = value || {}
+                       
                         return (
                             <div onClick={() => {
-                                history.push('/celebrity/1')
+                                id && history.push(`/celebrity/${id}`)
                                 document.body.scrollTop = document.documentElement.scrollTop = 0
 							}} key={`star-${i}`} style={{cursor: 'pointer', position: 'relative' }} > 
                                     <img src={pic} alt="name" style={{...styles.image}}/>

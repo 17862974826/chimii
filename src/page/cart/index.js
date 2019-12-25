@@ -104,20 +104,53 @@ class Cart extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            cart: []
+            cart: [],
+            priceInfo: {}
         }
     }
 
     handleAddProduct = index => {
 
-        if(this.state.cart[index].number) {
-            this.state.cart[index].number += 1
-        } else {
-            this.state.cart[index].number = 1
-        }
+        const { cart = [] } = this.state
 
+        const _cart = cart.map((v, i) => {
+            let  { num } = v || {}
+
+            if(i === index) {
+                return {
+                    ...v,
+                    num: num ? ++num : 1
+                }
+           } 
+
+           return {
+               ...v
+           }
+         
+        })
+
+        this.handleCalPrice(_cart)
+       
         this.setState({
-            cart: this.state.cart
+            cart: _cart
+        })
+    }
+
+    handleCalPrice = (itemList = []) => {
+
+        this.itemList = itemList.map(v => {
+            const { id, num } = v || {}
+            return `itemIds[]=${id},${num}`
+        }).join('&')
+
+        axios.get(`/index.php?c=api/chimi/price&${this.itemList}`).then(res => {
+            const { data: { data } = {} } = res || {}
+            const { prizeInfo } = data || {}
+            this.setState({
+                priceInfo: prizeInfo
+            })
+        }).catch(error => {
+            console.error(error)
         })
     }
 
@@ -126,16 +159,19 @@ class Cart extends React.Component {
             const { data: { data } = {} } = res || {}
             const { itemList = [] } = data || {}
             if(Array.isArray(itemList) && itemList.length) {
-            
+                
                 this.setState({
                     cart: itemList
                 })
+
+                this.handleCalPrice(itemList)
             }
         }).catch(error => console.error(error))
     }
 
     render() {
-        const { cart } = this.state
+        const { cart, priceInfo } = this.state
+        const { itemPrice, discountPrice } = priceInfo || {}
         return (
            <div style={{...styles.wrap}}>
                <p style={{...styles.title}}>{'Cart'}</p>
@@ -143,7 +179,7 @@ class Cart extends React.Component {
                 <div>
                     {
                         cart.map((v, i) => {
-                            const { pic, title, price, size, number } = v || {}
+                            const { pic, title, price, size, num } = v || {}
                             return (
                                 <div style={{...styles.cellWrrap}} key={`all-cart-${i}`}>
                                     <img src={pic} alt="" style={{...styles.pic}}/>
@@ -157,7 +193,7 @@ class Cart extends React.Component {
                                             <div>
                                                 <p style={{...styles.label}}>{'Number'}</p>
                                                 <div>
-                                                    <span style={{...styles.text, marginRight: 30}}>{number}</span>
+                                                    <span style={{...styles.text, marginRight: 30}}>{num}</span>
                                                     <span style={{...styles.text, cursor: 'pointer'}} onClick={() => {
                                                         this.handleAddProduct(i)
                                                     }}>{'+'}</span>
@@ -173,16 +209,16 @@ class Cart extends React.Component {
                         })
                     }
                 </div>
-                {/* <div style={{...styles.order}}>
+                <div style={{...styles.order}}>
                     <p style={{...styles.orderTitle}}>{'Order'}</p>
                     {
                         cart.map((v, i) => {
-                            const { price, title , number} = v|| {}
+                            const { price, title , num} = v|| {}
                             return (
-                                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 30}}>
+                                <div key={`price-cart-${i}`} style={{display: 'flex', justifyContent: 'space-between', marginBottom: 30}}>
                                     <p style={{flex: 1, fontSize: 20, color: '#333'}}>{title}</p>
                                     <div style={{display: 'flex', flex: 1, justifyContent: 'flex-end'}}>
-                                        <p style={{marginRight: 40}}>{`x${number}`}</p>
+                                        <p style={{marginRight: 40}}>{`x ${num}`}</p>
                                         <p style={{fontSize: 20, color: '#333'}}>{`$${price}`}</p>
                                     </div>
                                 </div>
@@ -191,17 +227,17 @@ class Cart extends React.Component {
                     }
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
                         <p style={{fontSize: 20, color: '#000'}}>{'Logistics cost'}</p>
-                        <p style={{fontSize: 20, color: '#333'}}>{'$20.00'}</p>
+                        <p style={{fontSize: 20, color: '#333'}}>{discountPrice}</p>
                     </div>
                     <div style={{...styles.orderLine}}/>
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
                         <p style={{fontSize: 20, color: '#000'}}>{'Sum'}</p>
-                        <p style={{fontSize: 20, color: '#333'}}>{'$40.00'}</p>
+                        <p style={{fontSize: 20, color: '#333'}}>{itemPrice}</p>
                     </div>
                     <div style={{...styles.button}}>
                         <p style={{color: '#fff', fontSize: 36}}>{'Continue'}</p>
                     </div>
-                </div> */}
+                </div>
            </div>
         )
     }

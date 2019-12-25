@@ -3,34 +3,37 @@ import axios from 'axios'
 
 const styles = {
     wrap: {
-        width: 720,
-        paddingTop: 105,
-        margin: '0 auto'
+        position: 'realtive',
+        width: 500,
+        paddingTop: 30,
+        paddingLeft: 30
     },
     title: {
-        fontSize: 46,
-        lineHeight: '46px',
+        fontSize: 32,
+        lineHeight: '32px',
         color: '#000',
         fontWeight: 'bold',
         marginBottom: 60
     },
     input: {
-        width: 720,
-        height: 80,
+        width: 440,
+        height: 40,
         paddingLeft: 20,
         paddingRight: 20,
+        fontSize: 12,
         backgroundColor: '#F5F5F5'
     },
     label: {
-        fontSize: 20,
-        lineHeight: '20px',
+        fontSize: 12,
+        lineHeight: '12px',
         color: '#000',
         fontWeight: 'bold',
         marginBottom: 10
     },
     buttonWrap: {
-        height: 90,
-        marginBottom: 60,
+        height: 40,
+        width: 440,
+        marginBottom: 10,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -40,7 +43,7 @@ const styles = {
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
-        fontSize: 36,
+        fontSize: 18,
     }
 }
 
@@ -52,8 +55,13 @@ class Login extends React.Component {
             login: {},
             create: {}
         }
+       
+        this.isLoading = false
+        const loginStatus = window.profile.isLogin
+      
         this.state = {
             isLogin: true,
+            loginStatus,
             title: 'Sign in',
         }
     }
@@ -65,6 +73,7 @@ class Login extends React.Component {
     }
 
     handleShowStatus = errorCode => {
+      
         switch(errorCode) {
             case '2001':
                 alert('email send error')
@@ -136,18 +145,26 @@ class Login extends React.Component {
     }
 
     handleClickLoginIn = () => {
+        if(this.isLoading) {
+            alert('操作繁忙，稍后再试')
+            return 
+        } 
+        this.isLoading = true
         axios.post('/index.php?c=api/chimipost/login',this.handleProcessRequestFormData('login'), {
             headers:{
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(res => {
           const { data: { errorCode } = {} }  = res || {} 
+          this.isLoading = false
           if(errorCode === 0 || errorCode === '0') {
             alert('登陆成功')
+            window.location.reload()
         } else {
-          this.handleShowStatus(errorCode)
+          this.handleShowStatus(String(errorCode))
         }
         }).catch(error => {
+            this.isLoading = false
             console.log(error)
         })
     }
@@ -158,8 +175,56 @@ class Login extends React.Component {
     }
 
 
+    renderProfilePage = () => {
+        const { loginStatus } = this.state
+        const { history } = this.props
+        const pathList = [
+            {
+                path: '/profile',
+                title: 'My Profile'
+            },
+            {
+                path: '/profile/order',
+                title: 'My Orders'
+            },
+            {
+                path: '/profile/coupon',
+                title: 'My Coupons'
+            },
+            {
+                path: '/profile/adress',
+                title: 'Address Book'
+            },
+            {
+                path: '/profile/changePassword',
+                title: 'Change Password'
+            }
+        ]
+        return (
+            <div style={{paddingTop: 30, paddingLeft: 60}}>
+                <p style={{fontSize: 32, color: '#000', marginBottom: 50}}>{'Hello World'}</p>
+                {
+                    pathList.map((v,i) => {
+                        const { path, title } = v || {}
+                        return (
+                             <p  key={`loginlist-${i}`} onClick={() => {
+                                 history.push(path)
+                             }} style={{ fontSize: 14, color: '#000', marginBottom: 30, cursor: 'pointer'}}>{title}</p>
+                        )
+                    })
+                }
+            </div>
+        )
+    }
+
+
     render() {
-        const { title, isLogin } = this.state
+        const { title, isLogin , loginStatus} = this.state
+
+        if(loginStatus) {
+            return this.renderProfilePage()
+        }
+
         return (
             <div style={{...styles.wrap}}>
                 {
@@ -171,44 +236,40 @@ class Login extends React.Component {
                             <input style={{...styles.input}} onChange={e => {
                                        this.handleSaveValue(e, 'email', 'login')
                                     }}/>
-                            <p style={{...styles.label, marginTop: 50}}>{'Password'}</p>
-                            <input style={{...styles.input, marginBottom: 90}} onChange={e => {
+                            <p style={{...styles.label, marginTop: 30}}>{'Password'}</p>
+                            <input style={{...styles.input, marginBottom: 52}} onChange={e => {
                                        this.handleSaveValue(e, 'passwd', 'login')
                                     }} type="password"/>
-                            <div style={{...styles.buttonWrap}}>
-                                <p style={{...styles.buttonText}} onClick={this.handleClickLoginIn}>{'Sign in'}</p>
+                            <div style={{...styles.buttonWrap}} onClick={this.handleClickLoginIn}>
+                                <p style={{...styles.buttonText}} >{'Sign in'}</p>
                             </div>
                             <div onClick={() => {
                                 this.handleChangePage(false)
                             }}>
-                                <span style={{fontSize: 20, color: '#000'}}>{'Not a member？'}</span>
-                                <span style={{fontS9ize: 20, color: '#5379F9', cursor: 'pointer'}}>{'  Sign up now'}</span>
+                                <span style={{fontSize: 12, color: '#000'}}>{'Not a member？'}</span>
+                                <span style={{fontS9ize: 12, color: '#5379F9', cursor: 'pointer'}}>{'  Sign up now'}</span>
                             </div>
+                            <p style={{position: 'absolute',cursor: 'pointer', right: 30, top: 286, color: '#5379F9', fontSize:12}}>{'Forgot password？'}</p>
                         </div>
                     </> : (
                         <>
                             <h2 style={{...styles.title}}>{'Sign up'}</h2>
                             <div>
-                                <p style={{...styles.label, marginTop: 50}}>{'Username'}</p>
+                                <p style={{...styles.label, marginTop: 30}}>{'Username'}</p>
                                     <input style={{...styles.input}} onChange={e => {
                                        this.handleSaveValue(e, 'name', 'create')
                                     }}/>
-                                <p style={{...styles.label, marginTop: 50}}>{'Email'}</p>
+                                <p style={{...styles.label, marginTop: 30}}>{'Email'}</p>
                                     <input style={{...styles.input}} onChange={e => {
                                        this.handleSaveValue(e, 'email', 'create')
                                     }}/>
-                                <p style={{...styles.label, marginTop: 50}}>{'Password'}</p>
+                                <p style={{...styles.label, marginTop: 30}}>{'Password'}</p>
                                     <input style={{...styles.input}} onChange={e => {
                                        this.handleSaveValue(e, 'passwd', 'create')
                                     }}/>
-                                <div style={{display: 'flex',background: '#fff', height: 60, marginTop: 24, marginBottom: 31}}>
-                                    <input type="checkbox" style={{width: 20, height: 20, marginRight: 10}}/>
-                                    <p style={{fontSize: 20, color: '#999'}}>{'Creating an account means you’re okay with our Terms of Service, Privacy Policy, and our default Notification Settings.'}</p>
-                                </div>
-                                <div style={{...styles.buttonWrap}} onClick={this.handleCreateAccount}>
+                                <div style={{...styles.buttonWrap, marginTop: 30}} onClick={this.handleCreateAccount}>
                                     <p style={{...styles.buttonText}}>{'Create Account'}</p>
                                 </div>
-                                <p style={{fontSize: 20, color: '#999'}}>{'This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.'}</p>
                             </div>
                         </>
                     )

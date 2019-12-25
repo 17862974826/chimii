@@ -5,11 +5,11 @@ import axios from 'axios'
 
 const styles = {
     wrap: {
-        width: 720,
-        paddingTop: 105,
+        width: 500,
+        paddingTop: 30,
+        paddingLeft: 30,
         overflow: 'scroll',
         height: '100%',
-        margin: '0 auto',
     },
     title: {
         fontSize: 46,
@@ -19,9 +19,9 @@ const styles = {
         marginBottom: 60
     },
     cellWrap: {
-        width: 633, 
+        width: 347, 
         display: 'flex',
-        height: 300, 
+        height: 180, 
         marginBottom: 60,
         overflow: 'hidden'
     },
