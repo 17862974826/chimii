@@ -137,8 +137,13 @@ class Navbar extends Component {
                     showMask: false
                 }
             })
+            
             this.setState({
-                navList: _navList
+                navList: [..._navList, {
+                    title: 'INFLUENCER',
+                    isPath: true,
+                    path: '/celebrity/all'
+                }]
             })
 
         }).catch(e => console.error(e))
@@ -179,9 +184,45 @@ class Navbar extends Component {
                    }}>
                        {
                            navList.map((value, i) => {
-                               const { title, id, showMask, items = [] } = value || {}
+                               const { title, id, showMask, isPath, path,  items = [] } = value || {}
                                const isCurrntTab = currentTab === i
                                const isClick  = clickTab === i
+
+                               if(isPath) {
+                                   return (
+                                    <div 
+                                    onClick={() =>{
+                                        const { history } = this.props
+                                        this.setState({
+                                            clickTab: i
+                                        }, () => {
+                                            document.body.scrollTop = document.documentElement.scrollTop = 0
+                                            history.push(path)
+                                        })
+                                    }}
+                                    style={{
+                                        position: 'relative', 
+                                        lineHeight: '50px',
+                                        height: 50,
+                                        color: fontColor,
+                                        fontSize: 12,
+                                        fontWeight: 'bold',
+                                        paddingLeft: 15,
+                                        paddingRight: 15,
+                                        fontFamily: 'Helvetica'
+                                    }}>
+                                        <p style={{
+                                            color: isClick ? '#921C59': fontColor,
+                                            fontSize: 12,
+                                            height: 50,
+                                            lineHeight: '55px',
+                                            cursor: 'pointer',
+                                        }}>{title}</p>
+                                    </div>
+                                   )
+                               }
+
+
                                return (
                                 <div onMouseEnter={e => {
                                     

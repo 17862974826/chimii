@@ -56,6 +56,14 @@ const styles = {
     originPrice: {
         color: '#999',
         fontSize: 24
+    },
+    empty: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginLeft: -132,
+        fontSize: 24,
+        color: '#999'
     }
 
 }
@@ -136,6 +144,7 @@ class ILike extends React.Component {
 
     render() {
         const { list } = this.state
+        const isShowList = Array.isArray(list) && list.length
         return (
             <div style={{...styles.wrap}}>
                 <h2 style={{...styles.title}}>{'iLike'}</h2>
@@ -144,6 +153,9 @@ class ILike extends React.Component {
                             list.map((v, i) => {
                                 return <Item {...v} key={`ilike-${i}`} onDelteILike={this.handleDelteILike}/>
                             })
+                        }
+                        {
+                            !isShowList ? <p style={{...styles.empty}}>{'Shopping Bag is Empty'}</p> :  null 
                         }
                     </div>
             </div>

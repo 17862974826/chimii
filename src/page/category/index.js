@@ -181,15 +181,14 @@ class Category extends React.Component {
 
         const { match: { params = {}} = {}, history } = this.props
         let { cate } = params || {}
-        cate = 4
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
            const { data: { data } = {} } = res || {}
-           const { tabs = {}, content} = data || {}
-           const { items } = tabs || {}
+           const { tabs = [], content} = data || {}
           
+           
            if(Array.isArray(content) && content.length) {
                 this.setState({
-                    tabs: items,
+                    tabs,
                     content
                 })
            } else {
@@ -227,14 +226,15 @@ class Category extends React.Component {
                         <div id="tabInfo" style={isFixed ? { ...styles.tabINfoFixed, left: this.scrollLeft + 60, height: 400, overflow: 'scroll' } : { width:  250 }}>
                             {
                                 tabs.map((v => {
-                                    const { title, list = []} = v|| {}
+                                    const { title, list = [] } = v|| {}
+                                    
                                     return (
                                        <ul>
                                            <li style={{whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 20, color: '#333',height: 50, lineHeight:'50px', fontWeight: 'bold'}}>{title}</li>
                                           {
-                                              list.map(d => {
+                                             Array.isArray(list) ?  list.map(d => {
                                                   return <li style={{whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 20, color: '#333',height: 50, lineHeight:'50px'}}>{d.title}</li>
-                                              })
+                                              }) : null
                                           }
                                        </ul>
                                     )
