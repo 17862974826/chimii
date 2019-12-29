@@ -123,7 +123,7 @@ class ILike extends React.Component {
 
     handleDelteILike = (id) => {
        if(!id) {
-           this.notifyMessage('失败')
+           this.notifyMessage('取消关注失败')
        }
        axios.post('/index.php?c=api/chimipost/addlike',this.handleProcessRequestFormData(id), {
         headers:{
@@ -132,10 +132,10 @@ class ILike extends React.Component {
     }).then(res => {
       const { data: { errorCode } = {} }  = res || {} 
       if(errorCode === 0 || errorCode === '0') {
-        this.notifyMessage('成功')
+        this.notifyMessage('取消关注成功')
         window.location.reload()
       } else {
-        this.notifyMessage('失败')
+        this.notifyMessage('取消关注失败')
       }
     }).catch(error => {
         console.log(error)

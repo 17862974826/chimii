@@ -1,5 +1,8 @@
 import React from 'react'
 import axios from 'axios'
+import {
+    withRouter
+	} from "react-router-dom";
 
 const styles = {
     wrap: {
@@ -109,7 +112,33 @@ class Cart extends React.Component {
         }
     }
 
-    handleAddProduct = index => {
+    handleDeletePriduct = index => {
+        const { cart = [] } = this.state
+
+        const _cart = cart.map((v, i) => {
+            let  { num } = v || {}
+
+            if(i === index) {
+                return {
+                    ...v,
+                    num: num <= 1 ? 1: --num
+                }
+           } 
+
+           return {
+               ...v
+           }
+         
+        })
+
+        this.handleCalPrice(_cart)
+       
+        this.setState({
+            cart: _cart
+        })
+    }
+
+    handleAddProduct = (index) => {
 
         const { cart = [] } = this.state
 
@@ -193,9 +222,12 @@ class Cart extends React.Component {
                                             <div>
                                                 <p style={{...styles.label}}>{'Number'}</p>
                                                 <div>
-                                                    <span style={{...styles.text, marginRight: 30}}>{num}</span>
+                                                     <span style={{...styles.text, cursor: 'pointer'}} onClick={() => {
+                                                        this.handleDeletePriduct(i, false)
+                                                    }}>{'-'}</span>
+                                                    <span style={{...styles.text, marginRight: 30, marginLeft: 30}}>{num}</span>
                                                     <span style={{...styles.text, cursor: 'pointer'}} onClick={() => {
-                                                        this.handleAddProduct(i)
+                                                        this.handleAddProduct(i, true)
                                                     }}>{'+'}</span>
                                                </div>
                                             </div>
@@ -234,7 +266,9 @@ class Cart extends React.Component {
                         <p style={{fontSize: 20, color: '#000'}}>{'Sum'}</p>
                         <p style={{fontSize: 20, color: '#333'}}>{itemPrice}</p>
                     </div>
-                    <div style={{...styles.button}}>
+                    <div style={{...styles.button}} onClick={() => {
+                        this.props.history.push('/payment')
+                    }}>
                         <p style={{color: '#fff', fontSize: 36}}>{'Continue'}</p>
                     </div>
                 </div>
@@ -244,4 +278,4 @@ class Cart extends React.Component {
 }
 
 
-export default Cart
+export default withRouter(Cart)

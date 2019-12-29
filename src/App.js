@@ -17,6 +17,7 @@ import Cart from './page/cart'
 import Payment from './page/payment'
 import Demo from './Demo'
 import Profile from './page/profile'
+import AddAdress from './page/profile/components/addAdress'
 
 
 window.profile = {
@@ -78,11 +79,14 @@ class App extends React.Component {
             <Route path="/cart">
               <Cart />
             </Route>
-            <Route path="/payment/:id" exact>
+            <Route path="/payment/" exact>
               <Payment />
             </Route>
             <Route path="/profile">
               <Profile />
+            </Route>
+            <Route path="/adress/add" exact>
+              <AddAdress />
             </Route>
             <Route path="/demo" exact>
               <Demo />

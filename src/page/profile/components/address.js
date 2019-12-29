@@ -15,11 +15,12 @@ const styles = {
     }
 }
 
-export default () => {
-    const [ state, setState ] = useState()
-
+export default props => {
+    const { history } = props
     return (
-        <div style={{marginLeft: 180, width: 560}}>
+        <div style={{marginLeft: 180, width: 560}} onClick={() => {
+            history.push('/adress/add')
+        }}>
                 <h2 style={{textAlign: 'center',marginBottom: 30,  fontSize: 32, color: '#000', fontWeight: 'bold'}}>{'Address Book'}</h2>
                 <div>
                     <div style={{ ...styles.wrap }}>

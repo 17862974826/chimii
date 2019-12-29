@@ -1,18 +1,19 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useCallback  } from 'react'
 import axios from 'axios'
 
 
 export default () => {
-    const [ state, setState ] = useState('')
-    const iframeCallback = (e) => {
+    
+    let order_id = ''
+    const iframeCallback = useCallback((e) => {
 
-       const { data } = e || {}
-       const { orderID } = data || {}
-
-       postPayStatus(orderID)
-
-    }
+        const { data } = e || {}
+        const { orderID } = data || {}
+ 
+        postPayStatus(orderID)
+ 
+     }, [])
 
     const postPayStatus = orderID => {
         if(!orderID) {
@@ -32,20 +33,26 @@ export default () => {
         
     }
 
-
-    useEffect(() => {
+    const successCallback = useCallback(res => {
+        const { data: { data } = {} } = res || {}
+        const { orderId } = data || {}
         const dom = document.getElementById('pay')
         dom.onload = function() {
-            const [, params = ''] = window.location.search.split('?')
-            const [, id] = params.split('=')
-
-            this.contentWindow.postMessage({ id, from: 'order' },'*');
+            this.contentWindow.postMessage({ id: orderId, from: 'order' },'*');
         }
+    }, [])
+
+
+    useEffect(() => {
+       
+        axios.get('/index.php?c=api/chimipost/createorder').then(successCallback).catch(err => {
+            console.log(err)
+        })
        window.addEventListener("message", iframeCallback, false);
        return () => {
         window.removeEventListener("message", iframeCallback, false);
        }
-      }, [state]);
+      }, [iframeCallback, successCallback]);
 
     return (
        <iframe  id="pay"src='http://priceslash.online/tpl/pay.html'  scrolling="no" style={{ backgroundColor: 'transparent', border: 'none', width: 400}}></iframe>

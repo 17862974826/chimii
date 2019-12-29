@@ -17,16 +17,22 @@ const styles = {
     },
     content: {
         height: 180,
+        flex: 1,
     },
     itemTitle: {
         marginBottom: 10,
         fontSize: 16, 
+        height: 20,
+        overflow: 'hidden',
         color: '#333',
         fontWeight: 'bold'
     },
     desc: {
         marginBottom: 16,
         fontSize: 12,
+        lineHeight: '16px',
+        height: 16,
+        overflow: 'hidden',
         color: '#666'
     },
     price: {
@@ -70,7 +76,7 @@ export default  (props) => {
                         <span style={{...styles.price}}>{`$${price}`}</span>
                         <span  style={{...styles.originPrice}}>{`$${originPrice}`}</span>
                     </div>
-                    <div style={{marginTop: 40, display: 'flex'}}>
+                    <div style={{marginTop: 20, display: 'flex'}}>
                         <p style={{...styles.symbol}} onClick={handleChangeItemNum.bind(null, 0)}>{'-'}</p>
                         <p style={{margin: '0 20px'}}>{state}</p>
                         <p style={{...styles.symbol}} onClick={handleChangeItemNum.bind(null, 1)}>{'+'}</p>

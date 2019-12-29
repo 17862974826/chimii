@@ -99,7 +99,7 @@ class Cart extends React.Component {
 
     handleJumpToPayment = () => {
         const { history }  = this.props
-        history.push('/payment/1')
+        history.push('/payment/')
     }
 
     componentDidMount() {

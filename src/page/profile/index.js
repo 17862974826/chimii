@@ -275,7 +275,7 @@ const Profile = (props) => {
                         <Test {...data}/>
                     </Route>
                     <Route path='/profile/adress' exact>
-                        <Adress {...data}/>
+                        <Adress {...data} history={history}/>
                     </Route>
                     <Route path='/profile/changepassword' exact>
                         <Changepassword {...data}/>
