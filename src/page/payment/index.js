@@ -45,37 +45,37 @@ class Payment extends React.Component {
                     {
                         type: 'text',
                         placeholder: 'Name',
-                        value: 'Luo',
+                        value: '',
                         key: 'name'
                     },
                     {
                         type: 'text',
                         placeholder: 'Country/Region',
-                        value: 'china',
+                        value: '',
                         key: 'country'
                     },
                     {
                         type: 'text',
                         placeholder: 'City',
-                        value: 'hangzhou',
+                        value: '',
                         key: 'city'
                     },
                     {
                         type: 'text',
                         placeholder: 'Address',
-                        value: '文一西路',
+                        value: '',
                         key: 'adress'
                     },
                     {
                         type: 'text',
                         placeholder: 'Phone',
-                        value: '182xxx',
+                        value: '',
                         key: 'phone'
                     },
                     {
                         type: 'text',
                         placeholder: 'E-mail',
-                        value: '296@qq.com',
+                        value: '',
                         key: 'email'
                     }
                 ]
@@ -117,18 +117,42 @@ class Payment extends React.Component {
         })
     }
 
+    async handleGetData() {
+       
+        const result = await this.fetchData()
+        const [ cartAllData, adressAllData ] = result || []
+        const { data: { data } = {} } = cartAllData || {}
+        const { data: { data: adreessData } = {}} = adressAllData || {}
+        const { isLogin, cartData = {}  } = data || {}
+        const { address } = adreessData || {}
+        const [ deafultAddress = {} ] = address || []
+        window.profile.isLogin = isLogin
+
+        const list = Object.keys(deafultAddress).map(d => {
+            return {
+                value: deafultAddress[d],
+                key: d
+            }
+        })
+
+        this.setState({
+            cartData,
+            address: {
+                ...this.state.address,
+                list
+            }
+        })
+
+
+    }
+
+    async fetchData() {
+        return Promise.all([axios.get('/index.php?c=api/chimi/cart'), axios.get('/index.php?c=api/chimi/udata&types=address')])
+    }
+
 
     componentDidMount() {
-        axios.get('/index.php?c=api/chimi/cart').then(res => {
-            const { data: { data } = {} } = res || {}
-            const { cartData = {}, isLogin } = data || {}
-            window.profile.isLogin = isLogin
-            this.setState({
-                cartData
-            })
-        }).catch(err => {
-            console.log(err)
-        })
+        this.handleGetData()
     }
 
     render() {

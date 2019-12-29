@@ -85,7 +85,7 @@ class App extends React.Component {
             <Route path="/profile">
               <Profile />
             </Route>
-            <Route path="/adress/add" exact>
+            <Route path="/adress/add/:type" >
               <AddAdress />
             </Route>
             <Route path="/demo" exact>

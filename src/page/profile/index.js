@@ -194,10 +194,10 @@ const Profile = (props) => {
         data: {}
     })
     const { path, name, profileList, data } = state || {}
-    const { username, coupons = [] } = data || {}
+    const { username, coupons = [], address = [] } = data || {}
 
     useEffect(() => {
-        axios.get('/index.php?c=api/chimi/udata&types=orders,coupon').then(res => {
+        axios.get('/index.php?c=api/chimi/udata&types=orders,coupon,address').then(res => {
             const { data: { data } = {} } = res || {}
             const { isLogin } = data || {}
             window.profile = {
@@ -275,7 +275,9 @@ const Profile = (props) => {
                         <Test {...data}/>
                     </Route>
                     <Route path='/profile/adress' exact>
-                        <Adress {...data} history={history}/>
+                        {
+                            address.length ? <Adress {...data} history={history}/> : null
+                        }
                     </Route>
                     <Route path='/profile/changepassword' exact>
                         <Changepassword {...data}/>

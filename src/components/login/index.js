@@ -63,6 +63,7 @@ class Login extends React.Component {
             isLogin: true,
             loginStatus,
             title: 'Sign in',
+            success: false
         }
     }
 
@@ -217,11 +218,30 @@ class Login extends React.Component {
         )
     }
 
+    componentDidMount() {
+        axios.get('/index.php?c=api/chimi/udata').then(res => {
+            const { data: { data } = {} } = res || {}
+            const { isLogin } = data || {}
+            this.setState({
+                loginStatus: isLogin,
+                success: true
+            })
+        }).catch(e => {
+            this.setState({
+                success: true
+            })
+        })
+    }
+
 
     render() {
-        const { title, isLogin , loginStatus} = this.state
+        const { title, isLogin , loginStatus, success } = this.state
 
-        if(loginStatus) {
+        if(!success) {
+            return null
+        }
+
+        if( loginStatus) {
             return this.renderProfilePage()
         }
 

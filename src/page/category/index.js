@@ -8,32 +8,35 @@ import Item from '../../components/Items'
 import axios from 'axios'
     
 const styles = {
+    wrap: {
+        width: 1300,
+        minWidth: 1300,
+        margin: '0 auto',
+        paddingBottom: 180
+    },
     banner:{
-        height: 653,
-            width: '100%',
-            minHeight: 653,
-            minWidth: 1440,
-            objectFit: 'cover'
+        height: 300,
+        width: 1050,
+        minHeight: 300,
+        minWidth: 1050,
+        objectFit: 'cover'
         },
     content: {
         display: 'flex',
-        minWidth: 1440,
-        width: 1440,
-        overflow: 'scroll',
-        paddingBottom: 180,
-        margin: '0 auto'
+        minWidth: 1300,
+        width: 1300,
+        overflow: 'scroll'
     },
     tabInfo: {
         width: 250,
-        paddingLeft: 60,
         marginRight: 40,
         paddingTop: 90,
     },
     tabINfoFixed: {
         position: 'fixed',
-        left: 60,
+        flex: 1,
         top: 0,
-        paddingTop: 90,
+        marginTop: 90,
     },
     contentInfo: {
         paddingTop: 90,
@@ -50,108 +53,10 @@ class Category extends React.Component {
         super(props)
         this.sum = 0
         this.state = {
-            banner: 'http://pic3.iqiyipic.com/common/lego/20191122/238dd8ae71754426b8765249756aa105.jpg',
+            banner: 'https://img.ltwebstatic.com/images3_acp/2019/12/04/157542876188155f1c9169a27f035883128df332ec.gif',
             isFixed: false,
             tabs: [],
             content: []
-            // tabs: [
-            //     {
-            //         title: 'Popular Styles',
-            //         list: [
-            //            {
-            //                 title: 'chinas'
-            //            },
-            //            {
-            //                 title: 'chinas'
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         title: 'Popular Styles',
-            //         list: [
-            //            {
-            //                 title: 'chinas'
-            //            },
-            //            {
-            //                 title: 'chinas'
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         title: 'Popular Styles',
-            //         list: [
-            //            {
-            //                 title: 'chinas'
-            //            },
-            //            {
-            //                 title: 'chinas'
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         title: 'Popular Styles',
-            //         list: [
-            //            {
-            //                 title: 'chinas'
-            //            },
-            //            {
-            //                 title: 'chinas'
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         title: 'Popular Styles',
-            //         list: [
-            //            {
-            //                 title: 'chinas'
-            //            },
-            //            {
-            //                 title: 'chinas'
-            //             }
-            //         ]
-            //     },
-            //     {
-            //         title: 'Popular Styles',
-            //         list: [
-            //            {
-            //                 title: 'chinas'
-            //            },
-            //            {
-            //                 title: 'chinas'
-            //             }
-            //         ]
-            //     }
-            // ],
-            // content: [
-            //     {
-            //         title: 'ITEM NAME',
-            //         price: 20,
-            //         originPrice: '40.00',
-            //         couponText: '50% OFF',
-            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-            //     },
-            //     {
-            //         title: 'ITEM NAME',
-            //         price: 20,
-            //         originPrice: '40.00',
-            //         couponText: '50% OFF',
-            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-            //     },
-            //     {
-            //         title: 'ITEM NAME',
-            //         price: 20,
-            //         originPrice: '40.00',
-            //         couponText: '50% OFF',
-            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-            //     },
-            //     {
-            //         title: 'ITEM NAME',
-            //         price: 20,
-            //         originPrice: '40.00',
-            //         couponText: '50% OFF',
-            //         pic: 'http://pic1.iqiyipic.com/image/20191010/a7/c5/v_115686092_m_601_m9_260_360.webp',
-            //     }
-            // ]
         }
         
     }
@@ -212,18 +117,16 @@ class Category extends React.Component {
     render(){
         const { banner, isFixed, tabs = [], content = [] } = this.state
         return (
-            <>
-                <img src={banner} alt="" style={{...styles.banner}} />
+            <div style={{...styles.wrap}}>
                 <div style={{...styles.content}}>
                     <div id="tabWrap" 
                         style={{ 
-                            width: 250,
-                            paddingLeft: 60,
+                            flex: 1,
                             marginRight: 40,
                             paddingTop: 90, 
                             overflow: 'hidden',
                         }}>
-                        <div id="tabInfo" style={isFixed ? { ...styles.tabINfoFixed, left: this.scrollLeft + 60, height: 400, overflow: 'scroll' } : { width:  250 }}>
+                        <div id="tabInfo" style={isFixed ? { ...styles.tabINfoFixed, left: this.scrollLeft, height: 690, overflow: 'scroll' } : { flex: 1, height: 600, overflow: 'scroll' }}>
                             {
                                 tabs.map((v => {
                                     const { title, list = [] } = v|| {}
@@ -243,6 +146,7 @@ class Category extends React.Component {
                         </div>
                     </div>
                     <div style={{...styles.contentInfo}}>
+                        <img src={banner} alt="" style={{...styles.banner}} />
                         {
                             content.map((v, i) => {
                                 return <Item key={`cate-${i}`} {...v} style={{width: 300,marginRight: 30, height: 382,  marginBottom: 30}}/>
@@ -250,7 +154,7 @@ class Category extends React.Component {
                         }
                     </div>
                 </div>
-            </>
+            </div>
         )
     }
 }

@@ -1,4 +1,6 @@
 import React from 'react'
+import axios from 'axios'
+import { withRouter } from 'react-router-dom'
 
 const styles = {
     wrap: {
@@ -49,24 +51,91 @@ const styles = {
 }
 
 
-export default () => {
+export default withRouter((props) => {
+
+
+    const inputValue = {}
+
+    const type = props.match.params.type
+   
+    const processRequestParams = () => {
+        return Object.keys(inputValue).reduce((p, v) => {
+            return {
+                ...p,
+                [v]: inputValue[v]
+            }
+        }, {})
+    }
+
+    const handleClickAddAddress = () => {
+       const params = processRequestParams()
+       const [ stuff, id] = type && type.split('-')
+       
+       let requestParams = `address=${JSON.stringify(params)}`
+
+       if(stuff ==='update' && id) {
+        requestParams = requestParams + '&type=update' + `&id=${id}`
+       }
+       
+       axios.post('/index.php?c=api/chimipost/addaddress',requestParams, {
+           headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+           }
+       }).then(res => {
+           const { data: { errorCode } = {} } = res || {}
+           if(errorCode === 0) {
+               alert('操作成功')
+               props.history.push('/profile/adress')
+           } else {
+               alert('新增失败')
+           }
+       }).catch(err => {
+           console.log(err)
+       })
+
+    }
+
+    const handleChangeValue = (e, key) => {
+       const value  = e.target.value
+       if(value) {
+        inputValue[key] = value
+       }
+    }
+
     return (
         <div style={{...styles.wrap}}>
             <p style={{...styles.title}}>{'Add New Address'}</p>
             <div>
                 <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 20}}>
-                    <input style={{...styles.nameInput}} placeholder={'* First Name'}/>
-                    <input style={{...styles.nameInput}} placeholder={'* last Name'}/>
+                    <input style={{...styles.nameInput}} placeholder={'* First Name'} onChange={e => {
+                        handleChangeValue(e, 'firstName')
+                    }}/>
+                    <input style={{...styles.nameInput}} placeholder={'* last Name'} onChange={e => {
+                        handleChangeValue(e, 'lastName')
+                    }}/>
                 </div>
-                <input style={{...styles.address}} placeholder={'* Address LIne 1: Street name and street number，company name'}/>
-                <input style={{...styles.address}} placeholder={'Building/Apartment/Suite no,Unit,Floor,etc(optional)'}/>
+                <input style={{...styles.address}} placeholder={'* Address LIne 1: Street name and street number，company name'} onChange={e => {
+                        handleChangeValue(e, 'street')
+                    }}/>
+                <input style={{...styles.address}} placeholder={'Building/Apartment/Suite no,Unit,Floor,etc(optional)'} onChange={e => {
+                        handleChangeValue(e, 'apartment')
+                    }}/>
                 <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 20}}>
-                    <input style={{...styles.nameInput}} placeholder={'* City'}/>
-                    <input style={{...styles.nameInput}} placeholder={'* State/Province'}/>
+                    <input style={{...styles.nameInput}} placeholder={'* City'} onChange={e => {
+                        handleChangeValue(e, 'city')
+                    }}/>
+                    <input style={{...styles.nameInput}} placeholder={'* State/Province'} onChange={e => {
+                        handleChangeValue(e, 'province')
+                    }}/>
                 </div>
                 <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 20}}>
-                    <input style={{...styles.nameInput}} placeholder={'* Post/Zip Code'}/>
-                    <select style={{...styles.nameInput}}>
+                    <input style={{...styles.nameInput}} placeholder={'* Post/Zip Code'} onChange={e => {
+                        handleChangeValue(e, 'postCode')
+                    }}/>
+                    <select style={{...styles.nameInput}} onChange={e => {
+                        handleChangeValue(e, 'country')
+                    }}>
+                        <option value=""  style={{display: 'none'}}>{'* Country'}</option>
                         <option value ="volvo">Volvo</option>
                         <option value ="saab">Saab</option>
                         <option value="opel">Opel</option>
@@ -74,18 +143,22 @@ export default () => {
                     </select>
                 </div>
                 <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: 20}}>
-                    <select style={{...styles.nameInput}}>
-                        <option value=""  style={{display: 'none'}}>count code</option>
+                    <select style={{...styles.nameInput}} onChange={e => {
+                        handleChangeValue(e, 'countryCode')
+                    }}>
+                        <option value=""  style={{display: 'none'}}>{'* Country Code'}</option>
                         <option value ="saab">Saab</option>
                         <option value="opel">Opel</option>
                         <option value="audi">Audi</option>
                     </select>
-                    <input style={{...styles.nameInput}} placeholder={'* Post/Zip Code'}/>
+                    <input style={{...styles.nameInput}} placeholder={'* iphone'} onChange={e => {
+                        handleChangeValue(e, 'iphone')
+                    }}/>
                 </div>
             </div>
-            <div style={{...styles.buttonWrap}}>
+            <div style={{...styles.buttonWrap}} onClick={handleClickAddAddress}>
                 <p style={{...styles.button}}>{'SAVE'}</p>
             </div>
         </div>
     )
-}
+})
