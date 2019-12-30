@@ -18,6 +18,7 @@ import Payment from './page/payment'
 import Demo from './Demo'
 import Profile from './page/profile'
 import AddAdress from './page/profile/components/addAdress'
+import CelebrityDeatil from './page/celebrity/components/detail'
 
 
 window.profile = {
@@ -90,6 +91,9 @@ class App extends React.Component {
             </Route>
             <Route path="/demo" exact>
               <Demo />
+            </Route>
+            <Route path="/celebrity/content/:id" exact>
+              <CelebrityDeatil />
             </Route>
             <Route path="*">
               <Error />

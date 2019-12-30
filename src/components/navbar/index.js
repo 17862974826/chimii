@@ -284,7 +284,7 @@ class Navbar extends Component {
                                                                 <div>
                                                                     <p style={{
                                                                         fontSize: 12,
-                                                                        lineHeight: '12px',
+                                                                        lineHeight: '14px',
                                                                         color: '#333',
                                                                         fontFamily: 'Helvetica',
                                                                         fontWeight: 'bold'
@@ -296,7 +296,7 @@ class Navbar extends Component {
                                                                                marginTop: 30,
                                                                                fontSize: 12,
                                                                                height: 24,
-                                                                               lineHeight: '12px',
+                                                                               lineHeight: '14px',
                                                                                color: '#333',
                                                                                width: 167,
                                                                                overflow: 'hidden',

@@ -16,6 +16,7 @@ const styles = {
     },
     banner:{
         height: 300,
+        marginBottom: 30,
         width: 1050,
         minHeight: 300,
         minWidth: 1050,
@@ -82,10 +83,36 @@ class Category extends React.Component {
         
     }
 
-    componentDidMount() {
 
+    componentDidUpdate(){
         const { match: { params = {}} = {}, history } = this.props
         let { cate } = params || {}
+        if(this.cateId === cate) return 
+        this.cateId = cate
+        axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
+            const { data: { data } = {} } = res || {}
+            const { tabs = [], content} = data || {}
+           
+            
+            if(Array.isArray(content) && content.length) {
+                 this.setState({
+                     tabs,
+                     content
+                 })
+            } else {
+                 history.push('/error')
+            }
+         }).catch(error => { 
+             history.push('/error')
+         })
+        
+    }
+
+    componentDidMount() {
+       
+        const { match: { params = {}} = {}, history } = this.props
+        let { cate } = params || {}
+        this.cateId = cate
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
            const { data: { data } = {} } = res || {}
            const { tabs = [], content} = data || {}
@@ -128,7 +155,7 @@ class Category extends React.Component {
                         }}>
                         <div id="tabInfo" style={isFixed ? { ...styles.tabINfoFixed, left: this.scrollLeft, height: 690, overflow: 'scroll' } : { flex: 1, height: 600, overflow: 'scroll' }}>
                             {
-                                tabs.map((v => {
+                                Array.isArray(tabs) ?  tabs.map((v => {
                                     const { title, list = [] } = v|| {}
                                     
                                     return (
@@ -136,12 +163,12 @@ class Category extends React.Component {
                                            <li style={{whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 20, color: '#333',height: 50, lineHeight:'50px', fontWeight: 'bold'}}>{title}</li>
                                           {
                                              Array.isArray(list) ?  list.map(d => {
-                                                  return <li style={{whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 20, color: '#333',height: 50, lineHeight:'50px'}}>{d.title}</li>
+                                                  return <li style={{ cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 20, color: '#333',height: 50, lineHeight:'50px'}}>{d.title}</li>
                                               }) : null
                                           }
                                        </ul>
                                     )
-                                }))
+                                })) : null
                             }
                         </div>
                     </div>

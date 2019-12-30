@@ -42,7 +42,7 @@ export default (props) => {
             <div  className={star} style={{ position: 'absolute', height: 320, overflow: 'hidden', top: 0, left: 0, background: '#fff', zIndex: 1}}>
                     <img   src={pic} alt="" style={{...imgStyle}}/>
             </div>
-            <div  className={item} style={{width: 240, height: 320, background: '#F0F0F0'}}>
+            <div  className={item} style={{width: 240, height: 320, background: '#F0F0F0', ...imgStyle}}>
                 <img src={itemPic} alt="" style={{width: 240, height: 240, objectFit: 'cover'}}/>
                 <div style={{marginTop: 16}}>
                     {title ?  <p style={{marginBottom: 10, fontSize: 12, color: '#000', textAlign: 'center'}}>{title}</p> : null }

@@ -86,7 +86,7 @@ export default  (props) => {
                        
                         return (
                             <div onClick={() => {
-                                id && history.push(`/celebrity/${id}`)
+                                id && history.push(`/celebrity/content/${id}`)
                                 document.body.scrollTop = document.documentElement.scrollTop = 0
 							}} key={`star-${i}`} style={{cursor: 'pointer', position: 'relative' }} > 
                                     <img src={pic} alt="name" style={{...styles.image}}/>
