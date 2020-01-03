@@ -7,45 +7,45 @@ import {
 const styles = {
     wrap: {
         position: 'relative',
-        width: 1440,
-        minWidtj: 1440,
-        paddingTop: 90,
-        paddingBottom: 152,
+        width: 1203,
+        minWidth: 1203,
+        paddingTop: 78,
+        paddingBottom: 100,
         margin: '0 auto'
     },
     title: {
-        fontSize: 46,
+        fontSize: 30,
         color: '#333',
         fontWeight: 'bold',
-        marginBottom: 25,
+        marginBottom: 20,
     },
     line: {
-        width: 900,
-        height: 2,
-        background: '#999',
-        marginBottom: 30,
+        width: 660,
+        height: 1,
+        background: '#666',
+        marginBottom: 21,
     },
     cellWrrap: {
-        width: 900,
-        height: 300,
+        width: 660,
+        height: 180,
         marginBottom: 30,
         display: 'flex',
         overflow: 'hidden'
     },
     pic: {
-        width: 300,
-        height: 300,
+        width: 180,
+        height: 180,
         marginRight: 30
     },
     content: {
-        width: 570,
-        height: 300,
+        flex: 1,
+        height: 180,
         overflow: 'hidden'
     },
     itemTitle: {
-        marginBottom: 90,
-        fontSize: 24,
-        color: '#333',
+        marginBottom: 72,
+        fontSize: 16,
+        color: '#000',
         fontWeight: 'bold'
     },
     contentInfo: {
@@ -55,32 +55,32 @@ const styles = {
         alignItems: 'flex-end'
     },
     label: {
-        marginBottom: 18,
-        fontSize: 20,
-        color: '#666'
+        marginBottom: 20,
+        fontSize: 16,
+        color: '#999'
     },
     text: {
         fontWeight: 'bold',
-        fontSize: 20,
+        fontSize: 16,
         color: '#000'
     },
     order: {
-        position: 'fixed',
-        paddingTop: 30,
-        paddingLeft: 50,
-        paddingBottom: 40,
-        paddingRight: 50,
+        position: 'absolute',
+        paddingTop: 40,
+        paddingLeft: 30,
+        paddingBottom: 30,
+        paddingRight: 30,
         boxSizing: 'border-box',
-        top: 170,
-        right: 40,
-        width: 500,
-        height: 658,
+        top: 130,
+        right: 0,
+        width: 460,
+        height: 400,
         overflow: 'scroll',
         background: '#f5f5f5'
     },
     orderTitle: {
-        marginBottom: 60,
-        fontSize: 46,
+        marginBottom: 34,
+        fontSize: 30,
         color: '#333',
         fontWeight: 'bold'
     },
@@ -88,17 +88,23 @@ const styles = {
         marginTop: 30,
         marginBottom: 30,
         width: 400,
-        height: 2,
+        height: 1,
         background: '#666'
     },
     button: {
-        marginTop: 60,
-        width: 400,
-        height: 90,
+        marginTop: 30,
+        width: 420,
+        height: 50,
         background: '#921C59',
-        lineHeight: '90px',
+        lineHeight: '50px',
         textAlign: 'center',
         cursor: 'pointer'
+    },
+    select: {
+        fontSize: 16,
+        color: '#000',
+        background: '#fff',
+        border: 'none'
     }
 }
 
@@ -208,16 +214,22 @@ class Cart extends React.Component {
                 <div>
                     {
                         cart.map((v, i) => {
-                            const { pic, title, price, size, num } = v || {}
+                            const { pic, title, price, originPrice, size, num } = v || {}
                             return (
                                 <div style={{...styles.cellWrrap}} key={`all-cart-${i}`}>
                                     <img src={pic} alt="" style={{...styles.pic}}/>
                                     <div style={{...styles.content}}>
-                                        <p style={{...styles.itemTitle}}>{title}</p>
+                                       { title ?  <p style={{...styles.itemTitle}}>{title}</p> : <div style={{...styles.itemTitle}}/> }
                                         <div style={{...styles.contentInfo}}>
                                             <div>
                                                 <p style={{...styles.label}}>{'Size'}</p>
-                                                <p style={{...styles.text}}>{size}</p>
+                                                <select style={{...styles.select}} >
+                                                        <option value=""  style={{display: 'none'}}>{'Medium'}</option>
+                                                        <option value ="volvo">Volvo</option>
+                                                        <option value ="saab">Saab</option>
+                                                        <option value="opel">Opel</option>
+                                                        <option value="audi">Audi</option>
+                                                </select>
                                             </div>
                                             <div>
                                                 <p style={{...styles.label}}>{'Number'}</p>
@@ -225,13 +237,14 @@ class Cart extends React.Component {
                                                      <span style={{...styles.text, cursor: 'pointer'}} onClick={() => {
                                                         this.handleDeletePriduct(i, false)
                                                     }}>{'-'}</span>
-                                                    <span style={{...styles.text, marginRight: 30, marginLeft: 30}}>{num}</span>
+                                                    <span style={{...styles.text, marginRight: 10, marginLeft: 10}}>{num}</span>
                                                     <span style={{...styles.text, cursor: 'pointer'}} onClick={() => {
                                                         this.handleAddProduct(i, true)
                                                     }}>{'+'}</span>
                                                </div>
                                             </div>
-                                            <div>
+                                            <div style={{display: 'flex'}}>
+                                               <p style={{...styles.text, marginRight: 20, color: '#999'}}>{`$${originPrice}`}</p>
                                                <p style={{...styles.text}}>{`$${price}`}</p>
                                             </div>
                                         </div>
@@ -242,34 +255,35 @@ class Cart extends React.Component {
                     }
                 </div>
                 <div style={{...styles.order}}>
-                    <p style={{...styles.orderTitle}}>{'Order'}</p>
+                    <p style={{...styles.orderTitle}}>{'Order Summary'}</p>
                     {
                         cart.map((v, i) => {
                             const { price, title , num} = v|| {}
+                           
                             return (
-                                <div key={`price-cart-${i}`} style={{display: 'flex', justifyContent: 'space-between', marginBottom: 30}}>
-                                    <p style={{flex: 1, fontSize: 20, color: '#333'}}>{title}</p>
+                                <div key={`price-cart-${i}`} style={{display: 'flex', justifyContent: 'space-between', marginBottom: 20}}>
+                                    <p style={{flex: 1, fontSize: 14, color: '#333'}}>{title}</p>
                                     <div style={{display: 'flex', flex: 1, justifyContent: 'flex-end'}}>
-                                        <p style={{marginRight: 40}}>{`x ${num}`}</p>
-                                        <p style={{fontSize: 20, color: '#333'}}>{`$${price}`}</p>
+                                        <p style={{marginRight: 68, fontSize: 14,color: '#333'}}>{`x ${num}`}</p>
+                                        <p style={{fontSize: 14, color: '#333'}}>{`$${price}`}</p>
                                     </div>
                                 </div>
                             )
                         })
                     }
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <p style={{fontSize: 20, color: '#000'}}>{'Logistics cost'}</p>
-                        <p style={{fontSize: 20, color: '#333'}}>{discountPrice}</p>
+                        <p style={{fontSize: 14, color: '#000'}}>{'Logistics cost'}</p>
+                        <p style={{fontSize: 14, color: '#333'}}>{discountPrice}</p>
                     </div>
                     <div style={{...styles.orderLine}}/>
                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                        <p style={{fontSize: 20, color: '#000'}}>{'Sum'}</p>
-                        <p style={{fontSize: 20, color: '#333'}}>{itemPrice}</p>
+                        <p style={{fontSize: 14, color: '#000'}}>{'Sum'}</p>
+                        <p style={{fontSize: 14, color: '#333'}}>{itemPrice}</p>
                     </div>
                     <div style={{...styles.button}} onClick={() => {
                         this.props.history.push('/payment')
                     }}>
-                        <p style={{color: '#fff', fontSize: 36}}>{'Continue'}</p>
+                        <p style={{color: '#fff', fontSize: 20}}>{'Continue'}</p>
                     </div>
                 </div>
            </div>

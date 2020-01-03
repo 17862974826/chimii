@@ -56,7 +56,7 @@ export default props => {
            console.log(err)
        })
     }
-    
+        
     return (
         <div style={{marginLeft: 180, width: 840 }} >
                 <h2 style={{textAlign: 'center',marginBottom: 30,  fontSize: 32, color: '#000', fontWeight: 'bold'}}>{'Address Book'}</h2>

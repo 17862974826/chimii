@@ -10,12 +10,14 @@ const styles = {
         alignItems: 'center',
         width: 1000,
         minWidth: 1000,
+        paddingBottom: 60,
         paddingTop: 77,
         margin: '0 auto'
     },
     item: {
         width: 300,
-        height: 300
+        height: 300,
+        cursor: 'pointer'
     },
     image: {
         width: 300,
@@ -27,9 +29,12 @@ const styles = {
 export default withRouter((props) => {
     const [state, setState] = useState({
         sartData: {},
-        items: []
+        items: [],
+        showCell: window.profile.currentInf || window.profile.currentInf === 0,
+        current: window.profile.currentInf || 0
     })
     const { id: netId } = props.match.params
+
     useEffect(() => {
         async function request (){
             const result = await  axios.get(`/index.php?c=api/chimi/wanghong&id=${netId}`)
@@ -38,6 +43,7 @@ export default withRouter((props) => {
             const [ netData ] = list || {}
             const { sartData, items } = netData || {}
             setState({
+                ...state,
                 sartData,
                 items
             })
@@ -46,7 +52,20 @@ export default withRouter((props) => {
      
         
     }, [netId])
-    const { sartData, items } = state || {}
+
+    const { sartData, items, showCell , current} = state || {}
+
+    const handleShowMask = (status, index) => {
+        setState({
+            ...state,
+            showCell: status,
+            current: index
+        })
+    }
+
+    const { pic: currentPic}  = ( items && items[current] ) || {}
+
+
     const {pic, desc, like, fllow, isLike, title, id }  = sartData || {}
 
     return (
@@ -61,10 +80,7 @@ export default withRouter((props) => {
                         { fllow ? <p style={{fontSize: 12, color: '#333', marginRight: 30}}>{`Fllow ${fllow}`}</p> : null}
                     </div>
                     {
-                        isLike ? null : <p style={{ color: '#921C59', fontSize: 12}} onClick={e => {
-                            e.stopPropagation()
-                            this.handleFllowStar(id)
-                        }}>{'Fllow and get her coupon'}</p>
+                        isLike ? null : <p style={{ color: '#921C59', fontSize: 12}}>{'Fllow and get her coupon'}</p>
                     }
                 </div>
             </div>
@@ -73,13 +89,35 @@ export default withRouter((props) => {
                     Array.isArray(items) ? items.map((v, i) => {
                         const { pic } = v || {}
                         return (
-                            <div style={{...styles.item}} key={`wanghongItem-${i}`}>
+                            <div style={{...styles.item}} key={`wanghongItem-${i}`} onClick={() => {
+                                handleShowMask(true, i)
+                            }}>
                                 <img alt="" src={pic} style={{...styles.image}}/>
                             </div>
                         )
                     }) : null
                 }
             </div>
+            {
+                    showCell  ? (
+                        <div onClick={() => {
+                            handleShowMask(false,  null)
+                        }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 99}}>
+                            <div style={{width: 900, height: 600, backgroundColor: '#fff', display: 'flex'}}>
+                                <img alt="" style={{width: 600, height: 600, objectFit: 'cover'}} src={currentPic}/>
+                                <div style={{flex: 1, paddingLeft: 20}}>
+                                    <div style={{height: 100, display: 'flex',alignItems: 'center',  borderBottom: '1px solid #999'}}>
+                                        <img src={pic} alt="" style={{ width: 60, height: 60, borderRadius: 30}}/>
+                                        <div style={{ marginLeft: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+                                            <p style={{fontSize: 12, color: '#000', fontFamily: 'bold'}}>{title}</p>
+                                            <p style={{fontSize: 12, color: '#921C59', fontFamily: 'bold'}}>{'Fllow'}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+                    ) : null
+            }
         </div>
     )
 })

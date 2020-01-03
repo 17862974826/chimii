@@ -72,8 +72,8 @@ export default withRouter((props) => {
        const [ stuff, id] = type && type.split('-')
        
        let requestParams = `address=${JSON.stringify(params)}`
-
-       if(stuff ==='update' && id) {
+      
+       if(stuff ==='update') {
         requestParams = requestParams + '&type=update' + `&id=${id}`
        }
        

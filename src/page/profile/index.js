@@ -203,6 +203,7 @@ const Profile = (props) => {
             window.profile = {
                 isLogin
             }
+            console.log(data)
             setState({
                 ...state,
                 data
@@ -274,7 +275,7 @@ const Profile = (props) => {
                     <Route path='/profile' exact>
                         <Test {...data}/>
                     </Route>
-                    <Route path='/profile/adress' exact>
+                    <Route path='/profile/address' exact>
                         {
                             address.length ? <Adress {...data} history={history}/> : null
                         }

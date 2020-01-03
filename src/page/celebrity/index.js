@@ -156,11 +156,14 @@ class Celebrity extends React.Component {
                                     <div style={{display: 'flex', justifyContent: 'space-between'}}>  
                                         {
                                             items.map((v, i) => {
+                                                const { pic } = v || {}
                                                 return (
-                                                    <div key={`cele-${i}`}  onClick={e => {
-                                                        this.handleChangeCell(true, i)
+                                                    <div key={`cele-${i}`} style={{cursor: 'pointer'}}  onClick={e => {
+                                                        window.profile.currentInf = i
+                                                        this.handleJumpStarDetail(id)
                                                     }}>
-                                                        <Item {...v} history={history} imgStyle={{width: 320, height: 300, objectFit: 'cover'}}/>
+                                                        <img style={{width: 320, height: 300, objectFit: 'cover'}} alt="" src={pic}/>
+                                                      
                                                     </div>
                                                 )
                                             })
@@ -186,26 +189,6 @@ class Celebrity extends React.Component {
                             </div>
                     </div>  : null
                 }
-                {/* {
-                    showCell  ? (
-                        <div onClick={() => {
-                            this.handleChangeCell(false, null)
-                        }} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'fixed', top: 0, right: 0, bottom: 0, left: 0, backgroundColor: 'rgba(0,0,0,0.3)', zIndex: 99}}>
-                            <div style={{width: 900, height: 600, backgroundColor: '#fff', display: 'flex'}}>
-                                <img alt="" style={{width: 600, height: 600}} src={ItemValue.pic}/>
-                                <div style={{flex: 1, paddingLeft: 20}}>
-                                    <div style={{height: 100, display: 'flex',alignItems: 'center',  borderBottom: '1px solid #999'}}>
-                                        <img src={pic} alt="" style={{ width: 60, height: 60, borderRadius: 30}}/>
-                                        <div style={{ marginLeft: 10, display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                                            <p style={{fontSize: 12, color: '#000', fontFamily: 'bold'}}>{title}</p>
-                                            <p style={{fontSize: 12, color: '#921C59', fontFamily: 'bold'}}>{'Fllow'}</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> 
-                    ) : null
-                } */}
             </div>
         )
     }
