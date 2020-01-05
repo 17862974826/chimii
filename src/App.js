@@ -66,7 +66,9 @@ class App extends React.Component {
               </RouteEnter>
             </Route>
             <Route path="/detail/:id" exact>
-              <Detail />
+              <RouteEnter>
+                <Detail />
+              </RouteEnter>
             </Route>
             <Route path="/category/:cate" >
               <Category />

@@ -54,7 +54,7 @@ const styles = {
 
 
 export default  (props) => {
-    const { count = 1, pic, title ,desc, price, originPrice, onDelteILike, id} = props || {}
+    const { num: count = 1, pic, title ,desc, showOpt = true, price, originPrice, onDelteILike, id} = props || {}
     const [state, setCount ] = useState(count)
     const handleChangeItemNum = symbol => {
         let count = state
@@ -76,11 +76,13 @@ export default  (props) => {
                         <span style={{...styles.price}}>{`$${price}`}</span>
                         <span  style={{...styles.originPrice}}>{`$${originPrice}`}</span>
                     </div>
-                    <div style={{marginTop: 20, display: 'flex'}}>
-                        <p style={{...styles.symbol}} onClick={handleChangeItemNum.bind(null, 0)}>{'-'}</p>
-                        <p style={{margin: '0 20px'}}>{state}</p>
-                        <p style={{...styles.symbol}} onClick={handleChangeItemNum.bind(null, 1)}>{'+'}</p>
-                    </div>
+                    {
+                        showOpt ? <div style={{marginTop: 20, display: 'flex'}}>
+                            <p style={{...styles.symbol}} onClick={handleChangeItemNum.bind(null, 0)}>{'-'}</p>
+                            <p style={{margin: '0 20px'}}>{state}</p>
+                            <p style={{...styles.symbol}} onClick={handleChangeItemNum.bind(null, 1)}>{'+'}</p>
+                        </div> : null
+                    }
                     <p style={{marginTop: 22, fontSize: 12, color: '#000', cursor: 'pointer'}} onClick={() => {
                         if(typeof onDelteILike === 'function') onDelteILike(id)
                     }}>{'Delete'}</p>

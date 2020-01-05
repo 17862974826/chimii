@@ -74,6 +74,7 @@ export default withRouter((props) => {
        let requestParams = `address=${JSON.stringify(params)}`
       
        if(stuff ==='update') {
+           
         requestParams = requestParams + '&type=update' + `&id=${id}`
        }
        

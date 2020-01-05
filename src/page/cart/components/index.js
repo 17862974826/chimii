@@ -114,6 +114,26 @@ class Cart extends React.Component {
         }).catch(error => console.error(error))
     }
 
+    handleDeleteItem(id, num) {
+        const { list = [] } = this.state
+        axios.post('/index.php?c=api/chimipost/addcart',`id=${id}&num=-${num}`, {
+            headers:{
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        }).then(res => {
+          const { data: { errorCode } = {} }  = res || {} 
+          if(errorCode === 0) {
+              alert('删除成功')
+              window.location.reload()
+          } else {
+            alert('删除失败')   
+          }
+            
+        }).catch(error => {
+            console.log(error)
+        })
+    }
+
     render() {
         const { list } = this.state
         const isShowList = Array.isArray(list) && list.length
@@ -125,7 +145,11 @@ class Cart extends React.Component {
                         isShowList ? <div>
                         {
                             list.map((v, i) => {
-                                return <Item {...v} key={`Cart-${i}`} />
+                                const { id, num } = v || {}
+                                return <Item {...v} key={`Cart-${i}`} onDelteILike={() => {
+                                    
+                                    this.handleDeleteItem(id, num)
+                                }}/>
                             })
                         }
                     </div> : null

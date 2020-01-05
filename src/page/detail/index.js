@@ -4,40 +4,48 @@ import axios from 'axios'
 import {
     withRouter
     } from "react-router-dom";
+import { setState } from 'expect/build/jestMatchersObject';
+
+const star = 'https://s2.ax1x.com/2020/01/05/lDP78I.png'
+
+
+const allStar = 'https://s2.ax1x.com/2020/01/05/lDpe3V.png' 
 
 const styles = {
     wrap: {
-        minWidth: 1440,
-        paddingBottom: 87,
+        minWidth: 1263,
+        paddingBottom: 50,
         overflow: 'hidden',
         backgroundColor: '#fff'
     },
     container: {
-        width: 1440,
+        width: 1263,
         margin: '0 auto'
     },
     content:{
-        margin: '0 auto',
-        width: 1160,
-        paddingTop: 51,
+        width: 1263,
+        paddingTop: 50,
         boxSizing: 'border-box',
-        minWidth: 1160,
-        height: 790,
-        minHeight: 790,
+        minWidth: 1263,
+        height: 541,
+        minHeight: 541,
         display: 'flex',
-        justifyContent: 'space-between'
+        overflow: 'hidden',
     },
     contentInfo:{
-        width: 650,
-        paddingLeft: 61,
+        width: 580,
+        marginLeft: 50,
         boxSizing: 'border-box',
         overflow: 'hidden'
     },
     title:{
-        fontSize: 24,
-        lineHeight: '24px',
-        color: '#333',
-        marginBottom: 6,
+        fontSize: 18,
+        heightL: 20,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        lineHeight: '18px',
+        color: '#000',
+        marginBottom: 20,
         fontWeight: 'bold'
     },
     desc: {
@@ -74,29 +82,32 @@ const styles = {
         marginBottom: 39
     },
     buttonWrap:{
-        width: 420,
+        width: 520,
         height: 50,
+        marginTop: 30,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         cursor: 'pointer',
-        backgroundColor: '#E83D49'
+        backgroundColor: '#921C59'
     },
     button:{
         color: '#fff',
-        fontSize: 18
+        fontSize: 20,
+        fontWeight: 'bold',
+        lineHeight: '20px'
     },
     more:{
         display: 'flex',
+        marginTop: 70,
         justifyContent: 'space-between',
-        width: 1160,
-        minWidth: 1160,
+        width: 1263,
+        minWidth: 1263,
         overflow: 'hidden',
-        margin: '0 auto',
         paddingBottom: 60
     },
     productInfo:{
-        width: 800,
+        width: 1000,
         overflow: 'hidden'
     },
     recommendInfo:{
@@ -105,10 +116,11 @@ const styles = {
     },
     productTitle:{
         height: 50,
-        lineHeight: '50px',
-        fontSize: 18,
+        lineHeight: '30px',
+        fontSize: 30,
         color: '#000',
-        marginBottom: 80,
+        textAlign: 'center',
+        fontWeight: 'bold',
         borderBottom: '1px solid #4A4A4A'
     },
     recommendTitle: {
@@ -121,14 +133,17 @@ const styles = {
     },
     itemWrap: {
         position: 'relative',
-        width: 260,
-        height: 382,
+        width: 250,
+        height: 252,
         marginBottom: 20,
-        overflow: 'hidden'
+        overflow: 'hidden',
+        cursor: 'pointer',
+        border: '1px solid #eee'
     },
     itemPic:{
         objectFit: 'cover',
-        height: 260
+        height: 248,
+        width: 248
     },
     shareContent: {
         width: 1360,
@@ -163,54 +178,70 @@ const styles = {
     shareButtonText: {
         fontSize: 18,
         color: '#fff'
+    },
+    starWrap: {
+        display: 'flex'
     }
 }
 
 class Detail extends React.Component {
 
     state = {
+        num: 1,
         productInfo: {},
+        wanghongInfo: {},
         MagnifierData: {
             list:[]
         },
+        comment: [],
         recommendItem: [],
-        shareImages: [
-            {
-                pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png'
-            },
-            {
-                pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png'
-            },
-            {
-                pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png'
-            },
-            {
-                pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png'
-            },
-            {
-                pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png'
-            },
-            {
-                pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png'
-            },
-            {
-                pic: 'https://s1.ax1x.com/2019/11/19/MRP78J.png'
-            }
-        ]
+       
+    }
+
+    cellNum = 1
+
+
+    async getData(id) {
+        const result = await Promise.all([axios.get(`/index.php?c=api/chimi/detail&id=${id}`), axios.get(`/index.php?c=api/chimi/comment&id=${id}&type=item`)])
+        const [showData, recommendData] = result || []
+        
+        const { data: { data: _showdata = {} } = {} } = showData || {}
+        const { data: { data: { list = [] } = {} } = {} } = recommendData || {}
+
+       this.setState({
+           ..._showdata,
+           comment: list
+       })
     }
 
     componentDidMount() {
         const { match: { params } = {} } = this.props
         const { id } = params || {}
-        axios.get(`/index.php?c=api/chimi/detail&id=${id}`).then(res => {
-            const { data: { data } = {} } = res || {}
-          
-            this.setState({
-                ...data
-            })
-        }).catch(err => {
-            console.error(err)
+        this.getData(id)
+        
+    }
+
+    handleSetProductNum = (type) => {
+        switch(type) {
+            case 'add':
+                this.cellNum += 1
+                break;
+            case 'del':
+                this.cellNum -= 1
+                if(this.cellNum < 1) {
+                    this.cellNum = 1
+                }
+               
+                break;
+            default: 
+                break;
+        }
+
+        this.setState({
+            num: this.cellNum
         })
+
+
     }
 
 
@@ -218,7 +249,7 @@ class Detail extends React.Component {
         const { match: { params } = {} } = this.props
         const { id } = params || {}
 
-        axios.post('/index.php?c=api/chimipost/addcart',`id=${id}&num=1`, {
+        axios.post('/index.php?c=api/chimipost/addcart',`id=${id}&num=${this.cellNum}`, {
             headers:{
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
@@ -238,9 +269,10 @@ class Detail extends React.Component {
 
     render() {
        
-        const { productInfo,  recommendItem = [], shareImages = [], } = this.state
+        const { productInfo, comment = [],  recommendItem = [], wanghongInfo } = this.state
+        const  {  name = '1', pic = 'https://s2.ax1x.com/2020/01/05/lDSHne.png' , desc: whDesc = '1' } = wanghongInfo || {}
  
-        const { title = '', desc = '', price = '', originPrice = '', couponText = '', like = '', share = '' } = productInfo || {}
+        const { title = '', desc = '', price = '', originPrice = '', couponText = '', like = '', share = '', starRatio = [true, false] } = productInfo || {}
         return (
             <div style={{...styles.wrap}}>
                 <div style={{...styles.container}}>
@@ -250,57 +282,88 @@ class Detail extends React.Component {
                         </div>
                         <div style={{...styles.contentInfo}}>
                             <p style={{...styles.title}}>{title}</p>
-                            <p style={{...styles.desc}}>{desc}</p>
-                            <div style={{...styles.priceInfo}}>
-                                { price ? <p style={{fontSize: 18, color: '#000', marginRight: 10}}>{`$${price}`}</p> : null}
-                               { originPrice ?  <p style={{fontSize: 18, color: '#999'}}>{`$${originPrice}`}</p> : null }
+                            <div style={{...styles.starWrap}}>
+                                {
+                                    Array.isArray(starRatio) && starRatio.length ? starRatio.map(v => {
+                                    
+                                        const url = v ? allStar : star
+                                        return <img alt="" src={url} style={{width: 20, height: 20, marginRight: 6}}/>
+                                    }) : null
+                                }
                             </div>
-                           { couponText ?  <p style={{...styles.coupon}}>{couponText}</p> : null }
-                           { like || like === 0?  <p style={{...styles.like}}>{`${like}人喜欢`}</p> : null}
-                            { share || share === 0 ? <p style={{...styles.share}}>{`${share}人分享`}</p> : null}
+                            <div style={{display: 'flex', width: 520, boxSizeing: 'border', paddingTop: 8, paddingLeft: 20, height: 80, border: '1px solid #eee', marginTop: 20}}>
+                                <div>
+                                    <img alt="" src={pic} style={{width: 40, height: 40, borderRadius: 20}}/>
+                                    <p style={{fontSize: 12, color: '#333',lineHeight:'12px', marginTop: 5 }}>{name}</p>
+                                </div>
+                                <p style={{marginTop: 20, fontSize: 12,color: '#333'}}>
+                                    {whDesc}
+                                </p>
+                            </div>
+                            <p style={{fontSize: 30, color: '#000', marginTop: 90, lineHeight: '30px'}}>{`$${price}`}</p> 
+                            <div style={{display: 'flex', marginTop: 61}}>
+                                <p style={{fontSize: 12, color: '#000'}}>{'Qty'}</p>
+                                <div style={{display: 'flex', marginLeft: 30}}>
+                                    <span style={{fontSize: 20, color: '#000', cursor: 'pointer'}} onClick={() => {
+                                        this.handleSetProductNum('del')
+                                    }}>{'-'}</span>
+                                    <span style={{fontSize: 20, color: '#000', margin: '0 20px'}}>{this.cellNum}</span>
+                                    <span style={{fontSize: 20, color: '#000', cursor: 'pointer'}} onClick={() => {
+                                        this.handleSetProductNum('add')
+                                    }}>{'+'}</span>
+                                </div>
+                            </div>
                             <div style={{...styles.buttonWrap}} onClick={this.handleClickAddProduct}>
-                                <p style={{...styles.button}}>{'+加入购物车'}</p>
+                                <p style={{...styles.button}}>{'ADD TO BAG'}</p>
                             </div>
                         </div>
                     </div>
                     <div style={{...styles.more}}>
                         <div style={{...styles.productInfo}}>
-                            <p style={{...styles.productTitle}}>{'产品介绍'}</p>
-                            <img src="https://s1.ax1x.com/2019/11/19/MR9e54.png" alt="" style={{objectFit: 'cover'}}/>
-                            <img src="https://s1.ax1x.com/2019/11/19/MR9e54.png" alt="" style={{objectFit: 'cover'}}/>
-                            <img src="https://s1.ax1x.com/2019/11/19/MR9e54.png" alt="" style={{objectFit: 'cover'}}/>
-                            <img src="https://s1.ax1x.com/2019/11/19/MR9e54.png" alt="" style={{objectFit: 'cover'}}/>
-                        </div>
-                        <div style={{...styles.recommendInfo}}>
-                            <p style={{...styles.recommendTitle}}>{'推荐商品'}</p>
+                            <p style={{...styles.productTitle}}>{'SHE SAY'}</p>
                             {
-                                recommendItem.map((v, i) => {
-                                    const { pic, title ,price, originPrice, coupon} = v|| {}
+                                comment.map(v => {
+                                    console.log(v)
+                                    const { title, uname, content } = v ||{}
                                     return (
-                                        <div style={{...styles.itemWrap}} key={`recomend-${i}`}>
-                                            <img src={pic} alt="" style={{...styles.itemPic}}/>
-                                            <p style={{ marginTop: 20, marginBottom: 20, fontSize: 24, color: '#000'}}>{title}</p>
-                                           <div style={{...styles.priceInfo}}>
-                                                <p style={{fontSize: 18, color: '#000', marginRight: 4}}>{`$${price}`}</p>
-                                                <p style={{fontSize: 18, color: '#999'}}>{`$${originPrice}`}</p>
+                                        <div style={{
+                                            height: 202,
+                                            flex: 1,
+                                            paddingTop: 30,
+                                            boxSizing: 'border-box',
+                                            borderBottom: '1px solid #ccc',
+                                            display: 'flex'
+                                        }}>
+                                           <div style={{marginRight: 87}}>
+                                                <p style={{fontSize: 12, color: '#000', fontWeight: 'bold'}}>{uname}</p>
                                            </div>
-                                           <p style={{position: 'absolute', top: 202, left: 0,  fontSize: 18, color: '#fff', paddingLeft: 17, paddingTop: 3, paddingBottom: 3, paddingRight: 7,  backgroundColor: '#E83D49'}}>{coupon}</p>
+                                           <p style={{fontSize: 12, color: '#333'}}>
+                                            {content}
+                                           </p>
                                         </div>
                                     )
                                 })
                             }
                         </div>
-                    </div>
-                    <div style={{...styles.shareContent}}>
-                        <div style={{...styles.shareImageWrap}}>
+                        <div style={{...styles.recommendInfo}}>
+                            <p style={{...styles.recommendTitle}}>{'推荐商品'}</p>
                             {
-                                shareImages.map((v, i) => (<img key={`share-img-${i}`} src="https://s1.ax1x.com/2019/11/19/MRP78J.png" alt=""  style={{...styles.shareImage}}/>))
+                                recommendItem.map((v, i) => {
+                                    const { pic, id, title ,price, originPrice, coupon} = v|| {}
+                                   
+                                    return pic ? (
+                                        <div style={{...styles.itemWrap}} key={`recomend-${i}`} onClick={() => {
+                                            this.props.history.push(`/detail/${id}`)
+                                            window.location.reload()
+                                            document.body.scrollTop = document.documentElement.scrollTop = 0
+                                           
+                                        }}>
+                                            <img src={pic} alt="" style={{...styles.itemPic}}/>
+                                    
+                                        </div> 
+                                    ): null
+                                })
                             }
-                        </div>
-                        <div style={{...styles.shareButtonWrap}}>
-                            <div style={{...styles.shareButton}}>
-                                <p style={{...styles.shareButtonText}}>{'分享该商品佩戴照片'}</p>
-                            </div>
                         </div>
                     </div>
                 </div>

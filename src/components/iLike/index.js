@@ -151,7 +151,7 @@ class ILike extends React.Component {
                     <div>
                         {
                             list.map((v, i) => {
-                                return <Item {...v} key={`ilike-${i}`} onDelteILike={this.handleDelteILike}/>
+                                return <Item {...v} showOpt={false} key={`ilike-${i}`} onDelteILike={this.handleDelteILike}/>
                             })
                         }
                         {

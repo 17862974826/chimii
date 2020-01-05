@@ -34,11 +34,11 @@ class Navbar extends Component {
                     title: 'Sign in',
                     icon: 'https://s2.ax1x.com/2019/11/22/M7LXY8.png'
                 },
-                {
-                    type: 'search',
-                    title: 'Search',
-                    icon: 'https://s2.ax1x.com/2019/11/22/M7Om6J.png'
-                },
+                // {
+                //     type: 'search',
+                //     title: 'Search',
+                //     icon: 'https://s2.ax1x.com/2019/11/22/M7Om6J.png'
+                // },
                 {
                     type: 'iLike',
                     title: 'iLike',
@@ -58,11 +58,11 @@ class Navbar extends Component {
         this.bgColor = '#fff'
         this.fontColor = '#000'
         this.logo = 'https://s2.ax1x.com/2019/12/04/Q1Y6IO.png'
-        if(/detail/.test(window.location.href)) {
-            this.bgColor = '#000'
-            this.fontColor = '#fff'
-            this.logo = 'https://s1.ax1x.com/2019/11/19/MRmKu4.png'
-        }
+        // if(/detail/.test(window.location.href)) {
+        //     this.bgColor = '#000'
+        //     this.fontColor = '#fff'
+        //     this.logo = 'https://s1.ax1x.com/2019/11/19/MRmKu4.png'
+        // }
     }
 
 
@@ -279,7 +279,7 @@ class Navbar extends Component {
                                                 }}>
                                                     {
                                                         Array.isArray(items) ? items.map(value => {
-                                                            const { title, list = [] } = value || {}
+                                                            const { title, list = [], id } = value || {}
                                                             return (
                                                                 <div>
                                                                     <p style={{
@@ -287,21 +287,32 @@ class Navbar extends Component {
                                                                         lineHeight: '14px',
                                                                         color: '#333',
                                                                         fontFamily: 'Helvetica',
-                                                                        fontWeight: 'bold'
+                                                                        fontWeight: 'bold',
+                                                                        cursor: 'pointer'
+                                                                    }}
+                                                                    onClick={e => {
+                                                                        e.stopPropagation()
+                                                                        this.props.history.push(`/category/${id}`)
                                                                     }}
                                                                     >{title}</p>
                                                                     <ul>
                                                                         {
-                                                                           Array.isArray(list) ? list.map((value, i) => (<li key={`li-${i}`} style={{
+                                                                           Array.isArray(list) ? list.map((value, i) => (<li key={`lissss-${i}`} style={{
                                                                                marginTop: 30,
                                                                                fontSize: 12,
                                                                                height: 24,
+                                                                               cursor: 'pointer',
                                                                                lineHeight: '14px',
                                                                                color: '#333',
                                                                                width: 167,
                                                                                overflow: 'hidden',
                                                                                textOverflow: 'ellipsis'
-                                                                           }}>{value.title}</li>))  : null
+                                                                           }}
+                                                                           onClick={e => {
+                                                                            e.stopPropagation()
+                                                                            this.props.history.push(`/category/${value.id}`)
+                                                                           }}
+                                                                           >{value.title}</li>))  : null
                                                                         }
                                                                     </ul>
                                                                 </div>
@@ -330,9 +341,9 @@ class Navbar extends Component {
                         case 'login':
                             Component = <Login history={history}/>;
                          break;
-                        case 'search':
-                            Component = <Search/>;
-                        break;
+                        // case 'search':
+                        //     Component = <Search/>;
+                        // break;
                         case 'iLike':
                             Component = <ILike/>;
                         break;

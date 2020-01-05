@@ -4,21 +4,26 @@ import React from 'react'
 const styles ={
     content:{
         display: 'flex',
-        width: 500,
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
         overflow: 'hidden',
+        marginRight: 20
     },
     image: {
-        width: 120,
-        height: 120,
-        marginRight: 20,
+        width: 150,
+        height: 150,
         cursor: 'pointer',
-        objectFit: 'cover'
+        boxSizing: 'border-box',
+        objectFit: 'cover' ,
+        border:'1.5px solid rgb(220, 220, 220)'
+        
     },
     bigPic:{
-        width: 500,
-        height: 500,
+        width: 464,
+        height: 464,
         overflow: 'hidden',
-        marginBottom: 20,
+        boxSizing: 'border-box',
         objectFit: 'cover',
         border:'1px solid rgb(220, 220, 220)'
     }
@@ -47,21 +52,21 @@ class Magnifier extends React.Component {
 
         return (
             <div >
-                <div>
+                <div style={{display: 'flex'}}>
+                    <div style={{...styles.content}}>
+                    {
+                        list.map((v, i) => {
+                            const { pic } = v || {}
+                            return (
+                                <div key={`magnifier-${i}`} onMouseEnter={this.handleMouseEnter.bind(null, i)} style={{height: 150, overflow: 'hidden'}}>
+                                    <img src={pic} alt="" style={{...styles.image}}/>
+                                </div>
+                            )
+                        })
+                    }
+                    </div>
                     <img src={bigPic} alt="" style={{...styles.bigPic}}/>
                 </div >
-                <div style={{...styles.content}}>
-                {
-                    list.map((v, i) => {
-                        const { pic } = v || {}
-                        return (
-                            <div key={`magnifier-${i}`} onMouseEnter={this.handleMouseEnter.bind(null, i)}>
-                                <img src={pic} alt="" style={{...styles.image}}/>
-                            </div>
-                        )
-                    })
-                }
-                </div>
             </div>
         )
     }

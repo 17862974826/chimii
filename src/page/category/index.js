@@ -59,6 +59,8 @@ class Category extends React.Component {
             tabs: [],
             content: []
         }
+        this.idList = {}
+        this.isSelect = false
         
     }
 
@@ -81,6 +83,31 @@ class Category extends React.Component {
         } 
 
         
+    }
+
+    getData = () => {
+        const id =Object.keys(this.idList).reduce((prev, next) => {
+           if(this.idList[next]) {
+            return prev + `${next},`
+           }
+           return prev
+        }, '')
+       
+        axios.get(`/index.php?c=api/chimi/tags&id=${id}`).then(res => {
+            const { data: { data } = {} } = res || {}
+            const {  content} = data || {}
+           
+            
+            if(Array.isArray(content) && content.length) {
+                 this.setState({
+                     content
+                 })
+            } else {
+                alert('请求失败，没有数据')
+            }
+         }).catch(error => { 
+            alert('网络错误')
+         })
     }
 
 
@@ -160,10 +187,19 @@ class Category extends React.Component {
                                     
                                     return (
                                        <ul>
-                                           <li style={{whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 20, color: '#333',height: 50, lineHeight:'50px', fontWeight: 'bold'}}>{title}</li>
+                                           <li style={{whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 14, color: '#000',height: 50, lineHeight:'50px', fontWeight: 'bold'}}>{title}</li>
                                           {
-                                             Array.isArray(list) ?  list.map(d => {
-                                                  return <li style={{ cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 20, color: '#333',height: 50, lineHeight:'50px'}}>{d.title}</li>
+                                             Array.isArray(list) ?  list.map((d, i) => {
+                                                  const { id, title } = d || {}
+                                                  return <li style={{ cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 12, color: '#333',height: 50, lineHeight:'50px'}}>
+                                                      <input id={`cate${i}`} type={'checkbox'} style={{width: 18, height: 18, 'WebkitAppearance': 'checkbox', marginRight: 10}} onChange={e => {
+                                                        const status = e.target.checked
+                                                          this.idList[id] = status
+                                                          this.isSelect  = true
+                                                          this.getData()
+                                                      }}/>
+                                                      <label for={`cate${i}`}>{title}</label>
+                                                  </li>
                                               }) : null
                                           }
                                        </ul>
@@ -176,7 +212,13 @@ class Category extends React.Component {
                         <img src={banner} alt="" style={{...styles.banner}} />
                         {
                             content.map((v, i) => {
-                                return <Item key={`cate-${i}`} {...v} style={{width: 300,marginRight: 30, height: 382,  marginBottom: 30}}/>
+                                return (
+                                    <div style={{cursor: 'pointer'}} onClick={() => {
+                                        this.props.history.push(`/detail/${v.id}`)
+                                    }}>
+                                        <Item key={`cate-${i}`} {...v} style={{width: 300,marginRight: 30, height: 382,  marginBottom: 30}}/>
+                                    </div>
+                                )
                             })
                         }
                     </div>
