@@ -35,12 +35,14 @@ const styles = {
 
 export default props => {
     const { history } = props
+   
     const [ state, setState ] = useState(
        {
             address: props.address || []
        }
     )
     const {  address } = state || {}
+   
     const handleDeleteAdress = (index) => {
        axios.post('/index.php?c=api/chimipost/addaddress', `type=delete&id=${index}`, {
         headers:{
@@ -78,7 +80,7 @@ export default props => {
                             return (
                                 <div key={`addresslist-${i}`} style={{ ...styles.wrap, marginRight: 20, justifyContent: 'flex-start',alignItems: 'flex-start', paddingRight: 20,paddingLeft: 20, paddingTop: 20  }}>
                                     {
-                                        Object.keys(v).map((key, i) => ( <p key={`addressItem-${i}`} style={{...styles.item}}>{`${key}: ${v[key]}`}</p>))
+                                        Object.keys(v).map((key, i) => ( <p key={`addressItem-${i}`} style={{...styles.item}}>{v[key] ? `${key}: ${v[key]}` : null}</p>))
                                     }
                                     <div style={{width: 230, display: 'flex', justifyContent: 'flex-end', paddingRight: 10, boxSizing: 'border-box'}}>
                                         <p style={{...styles.opt, marginRight: 20}} onClick={() => {

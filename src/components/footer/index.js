@@ -3,9 +3,9 @@ import { getFontSize } from '../../util'
 
 const styles = {
 		wrap: {
-            height: 450,
+            height: 315,
             minWidth: 1440,
-            paddingTop: 120,
+            paddingTop: 60,
             boxSizing: 'border-box',
 			backgroundImage: 'linear-gradient(#1F2023, #2B2C2E)'
 		},

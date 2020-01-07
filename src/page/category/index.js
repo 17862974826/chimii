@@ -86,12 +86,19 @@ class Category extends React.Component {
     }
 
     getData = () => {
-        const id =Object.keys(this.idList).reduce((prev, next) => {
+        let id =Object.keys(this.idList).reduce((prev, next) => {
            if(this.idList[next]) {
             return prev + `${next},`
            }
            return prev
         }, '')
+
+
+        if(!id) {
+            id =  this.cateId
+        }
+
+
        
         axios.get(`/index.php?c=api/chimi/tags&id=${id}`).then(res => {
             const { data: { data } = {} } = res || {}
@@ -180,7 +187,7 @@ class Category extends React.Component {
                             paddingTop: 90, 
                             overflow: 'hidden',
                         }}>
-                        <div id="tabInfo" style={isFixed ? { ...styles.tabINfoFixed, left: this.scrollLeft, height: 690, overflow: 'scroll' } : { flex: 1, height: 600, overflow: 'scroll' }}>
+                        <div id="tabInfo" className="scroll-set" style={isFixed ? { ...styles.tabINfoFixed, left: this.scrollLeft + 60, height: 'calc(100vh - 455px)', overflow: 'scroll',marginLeft: 0 } : {marginLeft: 60,  flex: 1, height: 690, overflow: 'scroll' }}>
                             {
                                 Array.isArray(tabs) ?  tabs.map((v => {
                                     const { title, list = [] } = v|| {}
@@ -198,7 +205,7 @@ class Category extends React.Component {
                                                           this.isSelect  = true
                                                           this.getData()
                                                       }}/>
-                                                      <label for={`cate${i}`}>{title}</label>
+                                                      <label style={{flex: 1, overflow: 'hidden', paddingRight:10}} for={`cate${i}`}>{title}</label>
                                                   </li>
                                               }) : null
                                           }

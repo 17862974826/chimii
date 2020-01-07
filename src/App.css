@@ -26,6 +26,8 @@
   backface-visibility: visible;
 }
 
+.scroll-set::-webkit-scrollbar{width:3px;height:0;background-color:#ccc} 
+
 
 
 .star {

@@ -131,7 +131,7 @@ class Payment extends React.Component {
             return `itemIds[]=${id},${num}`
         }).join('&')
 
-        axios.get(`/index.php?c=api/chimi/price&${this.itemList}`).then(res => {
+        axios.get(`/index.php?c=api/chimi/price&${this.itemList}&code=${this.couponCode}`).then(res => {
             const { data: { data } = {} } = res || {}
             const { prizeInfo } = data || {}
             this.setState({
@@ -187,6 +187,7 @@ class Payment extends React.Component {
 
         this.setState({
             cartData,
+            itemList,
             address: {
                 ...this.state.address,
                 list: address
@@ -194,6 +195,11 @@ class Payment extends React.Component {
         })
 
 
+    }
+
+    handleProcessCoupon = () => {
+        const { itemList = [] } = this.state
+        this.handleCalPrice(itemList)
     }
 
     async fetchData() {
@@ -229,8 +235,8 @@ class Payment extends React.Component {
                                         Object.keys(v).map((key, i) => ( <p key={`addressItem-${i}`} style={{...styles.item}}>{`${key}: ${v[key]}`}</p>))
                                     }
                                     <div style={{width: 230, display: 'flex', justifyContent: 'flex-end', paddingRight: 10, boxSizing: 'border-box'}}>
-                                        <p style={{...styles.opt, marginRight: 20, marginBottom: 9}} onClick={() => {
-                                            history.push(`/adress/add/update-${i}`)
+                                        <p style={{...styles.opt, marginRight: 20, marginBottom: 9, fontWeight: 'bold'}} onClick={() => {
+                                            history.push(`/adress/add/update-${i}?from=payment`)
                                         }}>{'edit'}</p>
                                     </div>
                                 </div>
@@ -289,7 +295,9 @@ class Payment extends React.Component {
                             <input style={{width: 300, height: 30, border: '1px solid #979797'}} onChange={e => {
                                 this.couponCode = e.target.value
                             }}/>
-                            <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', width: 80, height: 30, border: '1px solid #921C59'}}>
+                            <div
+                                onClick={this.handleProcessCoupon}
+                                style={{ cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', width: 80, height: 30, border: '1px solid #921C59'}}>
                                  <p style={{color: '#921C59', fontSize: 16}}>{'APPLY'}</p>
                             </div>
                         </div>

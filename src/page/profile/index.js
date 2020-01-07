@@ -149,7 +149,7 @@ const  pathList =  [
     },
     {
         title: 'Address Book',
-        path: '/adress',
+        path: '/address',
         checked:false 
     },
     {
@@ -203,7 +203,7 @@ const Profile = (props) => {
             window.profile = {
                 isLogin
             }
-            console.log(data)
+          
             setState({
                 ...state,
                 data
@@ -218,12 +218,13 @@ const Profile = (props) => {
             const { errorCode } = data || {}
             if(errorCode === 0) {
                 alert('退出登陆')
+                props.history.push('/')
                 window.location.reload()
             }
 
         }).catch( e => console.log())
     }
-  
+    
     return (
         <div style={{...styles.wrap}}>
             <ul style={{...styles.pathWrap}}>
@@ -277,7 +278,7 @@ const Profile = (props) => {
                     </Route>
                     <Route path='/profile/address' exact>
                         {
-                            address.length ? <Adress {...data} history={history}/> : null
+                            Array.isArray(address) && address.length ? <Adress {...data} history={history}/> : null
                         }
                     </Route>
                     <Route path='/profile/changepassword' exact>
@@ -285,7 +286,7 @@ const Profile = (props) => {
                     </Route>
                     <Route path='/profile/coupon' exact>
                        {
-                           coupons.length ?    <Coupon {...data} /> : null
+                          Array.isArray(coupons) &&  coupons.length ?    <Coupon {...data} /> : null
                        } 
                     </Route>
                     <Route path='/profile/order' exact>

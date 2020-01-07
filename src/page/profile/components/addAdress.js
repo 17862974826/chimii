@@ -57,6 +57,9 @@ export default withRouter((props) => {
     const inputValue = {}
 
     const type = props.match.params.type
+    const search = props.location.search
+
+   
    
     const processRequestParams = () => {
         return Object.keys(inputValue).reduce((p, v) => {
@@ -86,7 +89,12 @@ export default withRouter((props) => {
            const { data: { errorCode } = {} } = res || {}
            if(errorCode === 0) {
                alert('操作成功')
-               props.history.push('/profile/adress')
+               if(search.indexOf('payment') === -1) {
+                props.history.push('/profile/address')
+               } else {
+                props.history.push('/payment')
+               }
+              
            } else {
                alert('新增失败')
            }
