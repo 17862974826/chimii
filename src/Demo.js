@@ -2,7 +2,6 @@
 import React, { useEffect, useCallback  } from 'react'
 import axios from 'axios'
 
-
 export default () => {
     
     let order_id = ''

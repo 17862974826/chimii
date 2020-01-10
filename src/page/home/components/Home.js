@@ -7,13 +7,16 @@ import Star from './Star'
 import Item from './List'
 import Sellers from './Sellers'
 
+import Swiper from 'swiper/dist/js/swiper'
+import 'swiper/dist/css/swiper.min.css'
+
 
 const styles = {
     banner:{
 		height: 450,
-		minWidth: 1440,
-        width: '100%',
-        minHeight: 450,
+		minHeight: 450,
+		width: '100%',
+		minWidth: '100%',
         objectFit: 'cover'
 		},
 		wrap: {
@@ -33,7 +36,7 @@ class Home extends Component {
 
 
 	state = {
-		banner: '',
+		banner: [],
 		star: {},
 		sellersTop: {},
 		itemList: []
@@ -50,20 +53,41 @@ class Home extends Component {
 			
 			this.setState({
 				...HomeData,
+			}, () => {
+				if(this.swiper) return 
+				this.swiper = new Swiper ('.swiper-container', {
+					loop: true, // 循环模式选项
+					speed: 1000,
+					autoplay: {
+						disableOnInteraction: false,
+						delay: 2000,
+					},
+					observer: true,//修改swiper自己或子元素时，自动初始化swiper
+					  observeParents: true,//修改swiper的父元素时，自动初始化swiper
+				  }) 
 			})
 		}).catch(e => {
 			console.error(e)
 		})
 	 }
 
+
     render() {
-				const { banner = '', star = {}, sellersTop = {} , itemList = [] } = this.state
+				const { banner =[] , star = {}, sellersTop = {} , itemList = [] } = this.state
 				const { onChangeNavbarStatus, history } = this.props
 
 				
         return (
             <>	
-            	<img src={banner} alt="" style={{...styles.banner}} />
+				<div className="swiper-container">
+						<div className="swiper-wrapper">
+							{
+								Array.isArray(banner) ? banner.map((v,i) => {
+									return <img key={`banner-${i}`} src={v} className="swiper-slide" alt="" style={{...styles.banner}} />
+								}) :null
+							}
+						</div>
+       			 </div>
 							<div style={{...styles.wrap}}>
 								<div style={{...styles.contain}}>
 									

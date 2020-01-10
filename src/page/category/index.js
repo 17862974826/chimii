@@ -54,7 +54,7 @@ class Category extends React.Component {
         super(props)
         this.sum = 0
         this.state = {
-            banner: 'https://img.ltwebstatic.com/images3_acp/2019/12/04/157542876188155f1c9169a27f035883128df332ec.gif',
+            banner: '',
             isFixed: false,
             tabs: [],
             content: []
@@ -125,13 +125,13 @@ class Category extends React.Component {
         this.cateId = cate
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
             const { data: { data } = {} } = res || {}
-            const { tabs = [], content} = data || {}
-           
+            const { tabs = [], content } = data || {}
             
             if(Array.isArray(content) && content.length) {
                  this.setState({
                      tabs,
-                     content
+                     content,
+                     
                  })
             } else {
                  history.push('/error')
@@ -149,13 +149,14 @@ class Category extends React.Component {
         this.cateId = cate
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
            const { data: { data } = {} } = res || {}
-           const { tabs = [], content} = data || {}
+           const { tabs = [], content, banner} = data || {}
           
            
            if(Array.isArray(content) && content.length) {
                 this.setState({
                     tabs,
-                    content
+                    content,
+                    banner
                 })
            } else {
                 history.push('/error')

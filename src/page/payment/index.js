@@ -245,7 +245,7 @@ class Payment extends React.Component {
                         }
                         {
                              <div style={{ ...styles.temWrap, border: '1px dashed #ccc',  cursor: 'pointer', }} onClick={() => {
-                                history.push('/adress/add/new')
+                                history.push('/adress/add/new?from=payment')
                             }}>
                                 <img src="https://s2.ax1x.com/2019/12/22/QzDgEj.png" alt="" style={{width: 40, height: 40}} />
                                 <p style={{marginTop: 20, fontSize: 16, color: '#4a4a4a', textAlign: 'center'}}>{'Add New Address'}</p>
