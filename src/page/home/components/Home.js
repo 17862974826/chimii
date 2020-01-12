@@ -17,7 +17,8 @@ const styles = {
 		minHeight: 450,
 		width: '100%',
 		minWidth: '100%',
-        objectFit: 'cover'
+		objectFit: 'cover',
+		cursor: 'pointer'
 		},
 		wrap: {
 			paddingTop: 60,
@@ -42,6 +43,10 @@ class Home extends Component {
 		itemList: []
 	}
 
+	componentWillUnmount() {
+		this.swiper =  null
+	}
+
 	componentDidMount() {
 		
 		axios.get('/index.php?c=api/chimi/index').then(res => {
@@ -62,8 +67,12 @@ class Home extends Component {
 						disableOnInteraction: false,
 						delay: 2000,
 					},
+					pagination: {
+						el: '.swiper-pagination',
+						clickable :true
+					},
 					observer: true,//修改swiper自己或子元素时，自动初始化swiper
-					  observeParents: true,//修改swiper的父元素时，自动初始化swiper
+					observeParents: true,//修改swiper的父元素时，自动初始化swiper
 				  }) 
 			})
 		}).catch(e => {
@@ -83,10 +92,12 @@ class Home extends Component {
 						<div className="swiper-wrapper">
 							{
 								Array.isArray(banner) ? banner.map((v,i) => {
-									return <img key={`banner-${i}`} src={v} className="swiper-slide" alt="" style={{...styles.banner}} />
+									const { pic  = '' } = v || {}
+									return  pic ? <img key={`banner-${i}`} src={pic} className="swiper-slide" alt="" style={{...styles.banner}} /> : null 
 								}) :null
 							}
 						</div>
+						<div className="swiper-pagination"></div>
        			 </div>
 							<div style={{...styles.wrap}}>
 								<div style={{...styles.contain}}>

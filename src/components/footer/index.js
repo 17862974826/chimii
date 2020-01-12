@@ -1,5 +1,7 @@
 import React, { Component }  from 'react'
 import { getFontSize } from '../../util'
+import axios from 'axios'
+
 
 const styles = {
 		wrap: {
@@ -52,13 +54,19 @@ const styles = {
             paddingLeft: 20,
             color: '#fff',
             fontSize: 16
+        },
+        icon: {
+            width: 50, 
+            height: 50
         }
 }
 
 class Footer extends Component {
 
-    state = {
+    inputValue = ''
 
+    state = {
+        checkStatus: false,
         company:{
             title: 'COMPANY',
             list:[
@@ -87,8 +95,29 @@ class Footer extends Component {
         }
     }
 
+    async handlePostEmailEvent() {
+        if(!this.inputValue) {
+            alert('请输入邮箱订阅')
+            return 
+        }
+
+        const result = await axios.post('/index.php?c=api/chimipost/addemail', `email=${this.inputValue}`, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        const { data: { errorCode } = {} } = result || {}
+
+        if(errorCode === 0 || errorCode === 100) {
+            alert('订阅成功')
+        } else {
+            alert(`订阅成功, errorCode is ${errorCode}`)
+        }
+        
+    }
+
     render() {
-        const { company, contact, policies } = this.state
+        const { company, contact, policies, checkStatus } = this.state
         const { title: ptitle ,list: plist} = policies 
         const { title: gtitle ,list: glist } = company || {}
         const { title ,desc } = contact || {}
@@ -120,18 +149,29 @@ class Footer extends Component {
                    </div>
                    <div style={{...styles.searchWrap}}>
                       <div style={{...styles.inputwrap}}>
-                          <input style={{...styles.input}} placeholder={'Enter Email Address'}/>
-                          <img src="http://chuantu.xyz/t6/703/1573987235x989559068.png" alt="" style={{marginLeft: 16}}/>
+                          <input style={{...styles.input}} placeholder={'Enter Email Address'} onChange={e => {
+                              this.inputValue = e.target.value
+                          }}/>
+                          <img src="https://s2.ax1x.com/2020/01/12/lTk5FO.png" alt="" style={{marginLeft: 16, width: 37, height: 37}}/>
                       </div>
                       <div style={{marginTop: 24}}>
-                        <input  type='radio' style={{width: 16, height: 16, background: '#fff'}}/>
+                        <input  type='checkbox' checked={checkStatus} style={{ WebkitAppearance: 'checkbox', width: 16, height: 16, background: '#fff'}} onChange={e => {
+                            const { checked } = e.target || {}
+                            if(checked) {
+                                this.handlePostEmailEvent()
+                            }   
+                            
+                            this.setState({
+                                checkStatus:checked
+                            })
+                        }}/>
                         <span style={{color: '#fff', fontSize: 16, lineHeight: '20px', marginLeft: 8}}>{'I have read and agreed to'}</span>
                         <span style={{textDecoration: 'underline', color: '#fff', fontSize: 16, lineHeight: '20px', marginLeft: 4}}>{'Privacy Policy'}</span>
                       </div>
                       <div style={{marginTop: 29}}>
-                          <img src="http://chuantu.xyz/t6/703/1573988534x1033347913.png" alt="" style={{marginRight: 30}}/>
-                          <img src="http://chuantu.xyz/t6/703/1573988677x1031866013.png" alt="" style={{marginRight: 30}}/>
-                          <img src="http://chuantu.xyz/t6/703/1573988693x1031866013.png" alt="" style={{marginRight: 30}}/>
+                          <img src="https://s2.ax1x.com/2020/01/12/lTkjTf.png" alt="" style={{marginRight: 30, ...styles.icon}}/>
+                          <img src="https://s2.ax1x.com/2020/01/12/lTAClj.png" alt="" style={{marginRight: 30,  ...styles.icon}}/>
+                          <img src="https://s2.ax1x.com/2020/01/12/lTAE7V.png" alt="" style={{marginRight: 30,  ...styles.icon}}/>
                       </div>
                    </div>
                </div>

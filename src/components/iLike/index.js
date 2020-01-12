@@ -12,8 +12,8 @@ const styles = {
         height: '100%',
     },
     title: {
-        fontSize: 46,
-        lineHeight: '46px',
+        fontSize: 32,
+        lineHeight: '32px',
         color: '#000',
         fontWeight: 'bold',
         marginBottom: 60
@@ -147,7 +147,7 @@ class ILike extends React.Component {
         const isShowList = Array.isArray(list) && list.length
         return (
             <div style={{...styles.wrap}}>
-                <h2 style={{...styles.title}}>{'iLike'}</h2>
+                <h2 style={{...styles.title}}>{'Wish'}</h2>
                     <div>
                         {
                             list.map((v, i) => {

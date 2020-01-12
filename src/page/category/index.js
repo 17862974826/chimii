@@ -6,6 +6,9 @@ import {
 
 import Item from '../../components/Items'
 import axios from 'axios'
+
+import Swiper from 'swiper/dist/js/swiper'
+import 'swiper/dist/css/swiper.min.css'
     
 const styles = {
     wrap: {
@@ -16,7 +19,6 @@ const styles = {
     },
     banner:{
         height: 300,
-        marginBottom: 30,
         width: 1050,
         minHeight: 300,
         minWidth: 1050,
@@ -54,7 +56,7 @@ class Category extends React.Component {
         super(props)
         this.sum = 0
         this.state = {
-            banner: '',
+            banner: [],
             isFixed: false,
             tabs: [],
             content: []
@@ -118,7 +120,7 @@ class Category extends React.Component {
     }
 
 
-    componentDidUpdate(){
+    componentDidUpdate() {
         const { match: { params = {}} = {}, history } = this.props
         let { cate } = params || {}
         if(this.cateId === cate) return 
@@ -149,7 +151,7 @@ class Category extends React.Component {
         this.cateId = cate
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
            const { data: { data } = {} } = res || {}
-           const { tabs = [], content, banner} = data || {}
+           const { tabs = [], content, banner = []} = data || {}
           
            
            if(Array.isArray(content) && content.length) {
@@ -157,6 +159,20 @@ class Category extends React.Component {
                     tabs,
                     content,
                     banner
+                }, () => {
+                    if(this.swiper) return 
+                    this.swiper = new Swiper ('.swiper-container', {
+                        loop: true, // 循环模式选项
+                        speed: 1000,
+                        autoplay: {
+                            disableOnInteraction: false,
+                            delay: 2000,
+                        },
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable :true
+                        }
+                      }) 
                 })
            } else {
                 history.push('/error')
@@ -190,7 +206,7 @@ class Category extends React.Component {
                         }}>
                         <div id="tabInfo" className="scroll-set" style={isFixed ? { ...styles.tabINfoFixed, left: this.scrollLeft + 60, height: 'calc(100vh - 455px)', overflow: 'scroll',marginLeft: 0 } : {marginLeft: 60,  flex: 1, height: 690, overflow: 'scroll' }}>
                             {
-                                Array.isArray(tabs) ?  tabs.map((v => {
+                                Array.isArray(tabs) ?  tabs.map(((v, index) => {
                                     const { title, list = [] } = v|| {}
                                     
                                     return (
@@ -200,13 +216,13 @@ class Category extends React.Component {
                                              Array.isArray(list) ?  list.map((d, i) => {
                                                   const { id, title } = d || {}
                                                   return <li style={{ cursor: 'pointer', whiteSpace: 'nowrap', overflow: 'hidden',  textOverflow: 'ellipsis', fontSize: 12, color: '#333',height: 50, lineHeight:'50px'}}>
-                                                      <input id={`cate${i}`} type={'checkbox'} style={{width: 18, height: 18, 'WebkitAppearance': 'checkbox', marginRight: 10}} onChange={e => {
+                                                      <input id={`cate${index}${i}`} type={'checkbox'} style={{width: 18, height: 18, 'WebkitAppearance': 'checkbox', marginRight: 10}} onChange={e => {
                                                         const status = e.target.checked
                                                           this.idList[id] = status
                                                           this.isSelect  = true
                                                           this.getData()
                                                       }}/>
-                                                      <label style={{flex: 1, overflow: 'hidden', paddingRight:10}} for={`cate${i}`}>{title}</label>
+                                                      <label style={{flex: 1, cursor: 'pointer', overflow: 'hidden', paddingRight:10}} htmlFor={`cate${index}${i}`}>{title}</label>
                                                   </li>
                                               }) : null
                                           }
@@ -217,7 +233,17 @@ class Category extends React.Component {
                         </div>
                     </div>
                     <div style={{...styles.contentInfo}}>
-                        <img src={banner} alt="" style={{...styles.banner}} />
+                    <div className="swiper-container" style={{width: 1050,  marginBottom: 30}}>
+						<div className="swiper-wrapper">
+							{
+								Array.isArray(banner) ? banner.map((v,i) => {
+									const { pic  = '' } = v || {}
+									return  pic ? <img key={`banner-${i}`} src={pic} className="swiper-slide" alt="" style={{...styles.banner}} /> : null 
+								}) :null
+							}
+						</div>
+						<div className="swiper-pagination"></div>
+       			     </div>
                         {
                             content.map((v, i) => {
                                 return (

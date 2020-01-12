@@ -13,18 +13,21 @@ import Cart from '../../page/cart/components/'
 
 
 
+
 class Navbar extends Component {
 
     constructor(props) {
         super(props)
-
+        const { location: { pathname = '' } = {}  } = this.props
+        const [, , clickTab ] = pathname.split('/')
+       
         this.initStaticConfig()
         this.state = {
             bgColor: this.bgColor, 
             fontColor: this.fontColor,
             logo: this.logo,
             currentTab: null,
-            clickTab: null,
+            clickTab: Number(clickTab),
             sign: null,
             show: false,
             navList:[],
@@ -80,7 +83,7 @@ class Navbar extends Component {
     handleClickToCategory = (id, index) => {
         const { history } = this.props
         this.setState({
-            clickTab: index
+            clickTab: id
         }, () => {
             document.body.scrollTop = document.documentElement.scrollTop = 0
             history.push(`/category/${id}`)
@@ -142,6 +145,7 @@ class Navbar extends Component {
                 navList: [..._navList, {
                     title: 'INFLUENCER',
                     isPath: true,
+                    id: 'all',
                     path: '/celebrity/all'
                 }]
             })
@@ -164,9 +168,12 @@ class Navbar extends Component {
                 justifyContent: 'space-between',
                 backgroundColor: bgColor
             }}>
-               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: 60}} onClick={() => {
-                  this.props.history.push('/')
-                  
+               <div style={{ display: 'flex', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', marginLeft: 60}} onClick={() => {
+                   this.setState({
+                    clickTab: null
+                   }, () => {
+                    this.props.history.push('/')
+                   })
                }}>
                    <img src={logo} alt ='' style={{
                        width: 117,
@@ -186,7 +193,7 @@ class Navbar extends Component {
                            navList.map((value, i) => {
                                const { title, id, showMask, isPath, path,  items = [] } = value || {}
                                const isCurrntTab = currentTab === i
-                               const isClick  = clickTab === i
+                               const isClick  = clickTab === id
 
                                if(isPath) {
                                    return (
@@ -194,7 +201,7 @@ class Navbar extends Component {
                                     onClick={() =>{
                                         const { history } = this.props
                                         this.setState({
-                                            clickTab: i
+                                            clickTab: id
                                         }, () => {
                                             document.body.scrollTop = document.documentElement.scrollTop = 0
                                             history.push(path)
@@ -376,7 +383,12 @@ class Navbar extends Component {
                         show: false
                     })
                 }}>
-                   <div style={{height: 50, display: 'flex', alignItems: 'center'}}>
+                   <div style={{height: 50, display: 'flex', alignItems: 'center', paddingLeft: 100}} onClick={e => {
+                       e.stopPropagation()
+                      this.setState({
+                        clickTab: null
+                      })
+                   }}>
                        {
                            rightArea.map((v, i) => {
                                 const {  icon, type} =  v || {}
