@@ -9,6 +9,7 @@ import axios from 'axios'
 
 import Swiper from 'swiper/dist/js/swiper'
 import 'swiper/dist/css/swiper.min.css'
+
     
 const styles = {
     wrap: {
@@ -38,12 +39,16 @@ const styles = {
     tabINfoFixed: {
         position: 'fixed',
         flex: 1,
+        width: 150,
+        transition: 'transform 0.3s ease 0s',
+        overflow: 'hidden',
         top: 0,
         marginTop: 90,
     },
     contentInfo: {
         paddingTop: 90,
         flex: 1,
+        width: 1050,
         display: 'flex',
         flexWrap: 'wrap',
         alignContent:'flex-start'
@@ -59,6 +64,7 @@ class Category extends React.Component {
             banner: [],
             isFixed: false,
             tabs: [],
+            finished: false,
             content: []
         }
         this.idList = {}
@@ -66,23 +72,40 @@ class Category extends React.Component {
         
     }
 
-    handleScroll = (e) => {
+    handleScroll = e => {
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
+
+        const  isFinish = scrollTop >  this.distance + 300
+        console.log(scrollTop ,  this.distance + 540)
+        const { finished } = this.state 
+        
+        if(finished !== isFinish) {
+          
+            this.setState({
+                finished: isFinish
+            })
+        }
+
+
+        
        
         if(!this.state.isFixed && (scrollTop > this.scrollTop - 90)) {
            
             this.setState({
-                isFixed: true
+                isFixed: true,
+                finished
             })
             return 
         } 
 
         if(this.state.isFixed && (scrollTop < this.scrollTop - 90)) {
+
             this.setState({
-                isFixed: false
+                isFixed: false,
+                finished
             })
             return 
-        } 
+        }
 
         
     }
@@ -125,15 +148,34 @@ class Category extends React.Component {
         let { cate } = params || {}
         if(this.cateId === cate) return 
         this.cateId = cate
+
+        this.setState({
+            banner: []
+        })
+
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
             const { data: { data } = {} } = res || {}
-            const { tabs = [], content } = data || {}
-            
+            const { tabs = [], content = [] , banner = [] } = data || {}
+            this.distance = content.length / 3 * 380 
             if(Array.isArray(content) && content.length) {
                  this.setState({
                      tabs,
                      content,
-                     
+                     banner
+                 }, () => {
+                    this.swiper  = null
+                    this.swiper = new Swiper ('.swiper-container', {
+                        loop: true, // 循环模式选项
+                        speed: 1000,
+                        autoplay: {
+                            disableOnInteraction: false,
+                            delay: 2000,
+                        },
+                        pagination: {
+                            el: '.swiper-pagination',
+                            clickable :true
+                        }
+                    }) 
                  })
             } else {
                  history.push('/error')
@@ -151,8 +193,8 @@ class Category extends React.Component {
         this.cateId = cate
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
            const { data: { data } = {} } = res || {}
-           const { tabs = [], content, banner = []} = data || {}
-          
+           const { tabs = [], content = [], banner = []} = data || {}
+           this.distance = content.length / 3 * 380 
            
            if(Array.isArray(content) && content.length) {
                 this.setState({
@@ -172,7 +214,7 @@ class Category extends React.Component {
                             el: '.swiper-pagination',
                             clickable :true
                         }
-                      }) 
+                    }) 
                 })
            } else {
                 history.push('/error')
@@ -190,10 +232,13 @@ class Category extends React.Component {
 
     componentWillUnmount () {
         window.removeEventListener('scroll', this.handleScroll);
+        this.swiper = null
       }
 
     render(){
-        const { banner, isFixed, tabs = [], content = [] } = this.state
+        const { banner, isFixed, tabs = [], content = [], finished } = this.state
+
+        console.log(finished)
         return (
             <div style={{...styles.wrap}}>
                 <div style={{...styles.content}}>
@@ -204,7 +249,7 @@ class Category extends React.Component {
                             paddingTop: 90, 
                             overflow: 'hidden',
                         }}>
-                        <div id="tabInfo" className="scroll-set" style={isFixed ? { ...styles.tabINfoFixed, left: this.scrollLeft + 60, height: 'calc(100vh - 455px)', overflow: 'scroll',marginLeft: 0 } : {marginLeft: 60,  flex: 1, height: 690, overflow: 'scroll' }}>
+                        <div id="tabInfo" className="scroll-set" style={isFixed ? { ...styles.tabINfoFixed, transform: finished ? `translateY(calc(100vh - 455px - 780px))`: 'translateY(0)', left: this.scrollLeft + 60, height: 690, overflow: 'scroll',marginLeft: 0 } : {marginLeft: 60,  flex: 1, height: 690, overflow: 'scroll' }}>
                             {
                                 Array.isArray(tabs) ?  tabs.map(((v, index) => {
                                     const { title, list = [] } = v|| {}
@@ -233,17 +278,19 @@ class Category extends React.Component {
                         </div>
                     </div>
                     <div style={{...styles.contentInfo}}>
-                    <div className="swiper-container" style={{width: 1050,  marginBottom: 30}}>
-						<div className="swiper-wrapper">
-							{
-								Array.isArray(banner) ? banner.map((v,i) => {
-									const { pic  = '' } = v || {}
-									return  pic ? <img key={`banner-${i}`} src={pic} className="swiper-slide" alt="" style={{...styles.banner}} /> : null 
-								}) :null
-							}
-						</div>
-						<div className="swiper-pagination"></div>
-       			     </div>
+                        {
+                            Array.isArray(banner) && banner.length ?    (<div className="swiper-container" style={{width: 1050,  marginBottom: 30}}>
+                            <div className="swiper-wrapper">
+                                {
+                                    banner.map((v,i) => {
+                                        const { pic  = '' } = v || {}
+                                        return  pic ? <img key={`banner-${i}`} src={pic} className="swiper-slide" alt="" style={{...styles.banner}} /> : null 
+                                    })
+                                }
+                            </div>
+                            <div className="swiper-pagination"></div>
+                            </div>) : <div style={{width: 1050,  marginBottom: 30}} />
+                        }
                         {
                             content.map((v, i) => {
                                 return (
