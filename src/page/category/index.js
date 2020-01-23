@@ -4,7 +4,7 @@ import {
     withRouter
     } from "react-router-dom";
 
-import Item from '../../components/Items'
+import Item from '../../components/commonCell'
 import axios from 'axios'
 
 import Swiper from 'swiper/dist/js/swiper'
@@ -43,7 +43,9 @@ const styles = {
         transition: 'transform 0.3s ease 0s',
         overflow: 'hidden',
         top: 0,
-        marginTop: 90,
+        zIndex: 90,
+        paddingTop: 90,
+        backgroundColor: '#fff'
     },
     contentInfo: {
         paddingTop: 90,
@@ -75,8 +77,8 @@ class Category extends React.Component {
     handleScroll = e => {
         const scrollTop = document.documentElement.scrollTop || document.body.scrollTop
 
-        const  isFinish = scrollTop >  this.distance + 300
-        console.log(scrollTop ,  this.distance + 540)
+        const  isFinish = scrollTop >  this.distance  + 300
+
         const { finished } = this.state 
         
         if(finished !== isFinish) {
@@ -156,7 +158,7 @@ class Category extends React.Component {
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
             const { data: { data } = {} } = res || {}
             const { tabs = [], content = [] , banner = [] } = data || {}
-            this.distance = content.length / 3 * 380 
+            this.distance = content.length / 4 * 320 
             if(Array.isArray(content) && content.length) {
                  this.setState({
                      tabs,
@@ -174,7 +176,9 @@ class Category extends React.Component {
                         pagination: {
                             el: '.swiper-pagination',
                             clickable :true
-                        }
+                        },
+                        observer: true,//修改swiper自己或子元素时，自动初始化swiper
+					    observeParents: true,//修改swiper的父元素时，自动初始化swiper
                     }) 
                  })
             } else {
@@ -194,7 +198,7 @@ class Category extends React.Component {
         axios.get(`/index.php?c=api/chimi/tags&id=${cate}`).then(res => {
            const { data: { data } = {} } = res || {}
            const { tabs = [], content = [], banner = []} = data || {}
-           this.distance = content.length / 3 * 380 
+           this.distance = content.length / 4 * 320 
            
            if(Array.isArray(content) && content.length) {
                 this.setState({
@@ -238,7 +242,7 @@ class Category extends React.Component {
     render(){
         const { banner, isFixed, tabs = [], content = [], finished } = this.state
 
-        console.log(finished)
+
         return (
             <div style={{...styles.wrap}}>
                 <div style={{...styles.content}}>
@@ -248,8 +252,9 @@ class Category extends React.Component {
                             marginRight: 40,
                             paddingTop: 90, 
                             overflow: 'hidden',
+                            backgroundColor: '#fff'
                         }}>
-                        <div id="tabInfo" className="scroll-set" style={isFixed ? { ...styles.tabINfoFixed, transform: finished ? `translateY(calc(100vh - 455px - 780px))`: 'translateY(0)', left: this.scrollLeft + 60, height: 690, overflow: 'scroll',marginLeft: 0 } : {marginLeft: 60,  flex: 1, height: 690, overflow: 'scroll' }}>
+                        <div id="tabInfo" className="scroll-set" style={isFixed ? { ...styles.tabINfoFixed, width: 210, paddingLeft: 60,  transform: finished ? `translateY(calc(100vh - 455px - 100vh))`: 'translateY(0)', left: this.scrollLeft, height: '100%', overflow: 'scroll',marginLeft: 0 } : {marginLeft: 60,  flex: 1, height: '100%', overflow: 'scroll' }}>
                             {
                                 Array.isArray(tabs) ?  tabs.map(((v, index) => {
                                     const { title, list = [] } = v|| {}
@@ -293,11 +298,14 @@ class Category extends React.Component {
                         }
                         {
                             content.map((v, i) => {
+                                const { itemPic, pic, subPic, ...extParams } = v || {}
+                                const _pic = pic || itemPic || subPic
+                                const _itemPic = subPic || itemPic || pic
                                 return (
-                                    <div style={{cursor: 'pointer'}} onClick={() => {
+                                    <div style={{cursor: 'pointer', marginBottom: 30, marginRight: 20}} onClick={() => {
                                         this.props.history.push(`/detail/${v.id}`)
                                     }}>
-                                        <Item key={`cate-${i}`} {...v} style={{width: 300,marginRight: 30, height: 382,  marginBottom: 30}}/>
+                                        <Item key={`cate-${i}`} pic={_pic} itemPic={_itemPic} {...extParams} imgStyle={{ height: 320, width: 240, objectFit: 'cover', overflow: 'hidden'}} />
                                     </div>
                                 )
                             })

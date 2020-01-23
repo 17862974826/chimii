@@ -80,7 +80,7 @@ class Footer extends Component {
         },
         contact:{
             title: 'CONTACT US',
-            desc: 'Room D,10/F,Tower A,Billion Centre,1 Wang Kwong Road,Kowloon Bay,Kowloon,Hong Kong.'
+            desc: 'Room 2085, Building 20, 1399 Liangmu Road, Cangqian Street, Yuhang District, Hangzhou, China'
         },
         policies:{
             title: 'TERMS&POLICIES',

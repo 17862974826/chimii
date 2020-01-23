@@ -2,7 +2,7 @@ import React , { useState } from 'react'
 import Collect from './collection/index'
 
 export default (props) => {
-    const { history, pic, imgStyle = {} , couponText, id, isLike, desc, price, title, originPrice, itemPic } = props || {}
+    const { style, history, pic, imgStyle = {} , couponText, id, isLike, desc, price, title, originPrice, itemPic } = props || {}
 
 
     const [ state, setState] = useState({
@@ -22,7 +22,7 @@ export default (props) => {
         onClick={() => {
             document.body.scrollTop = document.documentElement.scrollTop = 0
         }} 
-        style={{cursor: 'pointer', position: 'relative', perspective:1200 }} 
+        style={{cursor: 'pointer', position: 'relative', perspective:1200, ...style }} 
         onMouseEnter={(e) => {
             const id = e.target.id
         

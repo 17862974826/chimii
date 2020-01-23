@@ -136,6 +136,7 @@ class Login extends React.Component {
           const { data: { errorCode } = {} }  = res || {} 
           if(errorCode === 0 || errorCode === '0') {
               alert('注册成功')
+              window.location.reload()
           } else {
            
             this.handleShowStatus(String(errorCode))
@@ -175,9 +176,21 @@ class Login extends React.Component {
         this.inputValue[status][key] = username
     }
 
+     handleClickLogout = () => {
+        axios.get('/index.php?c=api/chimipost/loginout').then(res => {
+            const { data = {} } = res || {}
+            const { errorCode } = data || {}
+            if(errorCode === 0) {
+                alert('退出登陆')
+                window.location.reload()
+            }
+
+        }).catch( e => console.log())
+    }
+
 
     renderProfilePage = () => {
-        const { loginStatus } = this.state
+       
         const { history } = this.props
         const pathList = [
             {
@@ -199,6 +212,11 @@ class Login extends React.Component {
             {
                 path: '/profile/changePassword',
                 title: 'Change Password'
+            },
+            {
+                path: '',
+                click: true,
+                title: 'Sign out'
             }
         ]
         return (
@@ -206,10 +224,16 @@ class Login extends React.Component {
                 <p style={{fontSize: 32, color: '#000', marginBottom: 50}}>{'Hello World'}</p>
                 {
                     pathList.map((v,i) => {
-                        const { path, title } = v || {}
+                        const { path, title, click } = v || {}
                         return (
                              <p  key={`loginlist-${i}`} onClick={() => {
-                                 history.push(path)
+
+                                if(click) {
+                                    this.handleClickLogout()
+                                    return 
+                                }
+                                history.push(path)
+                                
                              }} style={{ fontSize: 14, color: '#000', marginBottom: 30, cursor: 'pointer'}}>{title}</p>
                         )
                     })
@@ -284,7 +308,7 @@ class Login extends React.Component {
                                        this.handleSaveValue(e, 'email', 'create')
                                     }}/>
                                 <p style={{...styles.label, marginTop: 30}}>{'Password'}</p>
-                                    <input style={{...styles.input}} onChange={e => {
+                                    <input type="password" style={{...styles.input}} onChange={e => {
                                        this.handleSaveValue(e, 'passwd', 'create')
                                     }}/>
                                 <div style={{...styles.buttonWrap, marginTop: 30}} onClick={this.handleCreateAccount}>

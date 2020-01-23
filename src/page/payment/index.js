@@ -160,11 +160,11 @@ class Payment extends React.Component {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         }).then(res => {
-            const { data: {  errorCode } = {}} = res || {}
+            const { data: {  errorCode, data: { payUrl = '' } = {}  } = {}} = res || {}
             
             if(errorCode === 0) {
                 alert('保存成功')
-                this.props.history.push('/demo')
+                payUrl && window.open(payUrl)
             } else {
                 alert('保存失败')
             }

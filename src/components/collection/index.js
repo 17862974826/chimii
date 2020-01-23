@@ -24,11 +24,11 @@ export default (props) => {
 
     const [status, setStatus] = useState(isCollect)
 
-    const handleProcessRequestFormData = () => {
+    const handleProcessRequestFormData = status => {
         const json = {
             id,
             type: 'item',
-            action: 'add' 
+            action: status ? 'del' : 'add' 
         }
 
         return Object.keys(json).map(v => {
@@ -39,24 +39,34 @@ export default (props) => {
     return (
         <div style={{...styles.wrap, ...style}} onClick={e => {
             e.stopPropagation()
-            if(!status) {
 
-                axios.post('/index.php?c=api/chimipost/addlike',handleProcessRequestFormData(), {
+                axios.post('/index.php?c=api/chimipost/addlike',handleProcessRequestFormData(status), {
                     headers:{
                         'Content-Type': 'application/x-www-form-urlencoded'
                     }
                 }).then(res => {
                   const { data: { errorCode } = {} }  = res || {} 
                   if(errorCode === 0 || errorCode === '0') {
-                    alert('收藏成功')
-                    setStatus(true)
+
+                    if(status) {
+                        alert('取消收藏成功')
+                        setStatus(false)
+                    } else {
+                        alert('收藏成功')
+                        setStatus(true)
+                    }
+                
                   } else {
-                    alert('收藏失败')
+                    if(status) {
+                        alert('取消收藏失败')
+                    } else {
+                        alert('收藏失败')
+                    }
                   }
                 }).catch(error => {
                     console.log(error)
                 })
-            }
+            
         }}>
             <img src={status? selected : collection} alt="" style={{...styles.img}}/>
         </div>
