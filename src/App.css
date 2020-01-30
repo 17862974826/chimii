@@ -9,21 +9,25 @@
   transform: rotate3d(0,1,0, 180deg);
   transition: all 0.3s;
   backface-visibility: hidden;
+  background-color: #fff
 }
 .item {
   transform: rotate(0);
   transition: all 0.3s;
   backface-visibility: hidden;
+  background-color: #fff
 }
 .back {
   transform: rotate3d(0,1,0, -180deg);
   transition: all 0.3s;
   backface-visibility: visible;
+  background-color: #fff
 }
 .back1 {
   transform:rotate3d(0,1,0, 0deg);
   transition: all 0.3s;
   backface-visibility: visible;
+  background-color: #fff
 }
 
 .scroll-set::-webkit-scrollbar{width:3px;height:0;background-color:#ccc} 

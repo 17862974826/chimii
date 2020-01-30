@@ -302,7 +302,7 @@ class Category extends React.Component {
                                 const _pic = pic || itemPic || subPic
                                 const _itemPic = subPic || itemPic || pic
                                 return (
-                                    <div style={{cursor: 'pointer', marginBottom: 30, marginRight: 20}} onClick={() => {
+                                    <div style={{cursor: 'pointer', marginBottom: 30, marginRight: 20, backgroundColor: '#fff'}} onClick={() => {
                                         this.props.history.push(`/detail/${v.id}`)
                                     }}>
                                         <Item key={`cate-${i}`} pic={_pic} itemPic={_itemPic} {...extParams} imgStyle={{ height: 320, width: 240, objectFit: 'cover', overflow: 'hidden'}} />
